@@ -19,7 +19,7 @@ class DummyModel:
         """
         return 0
 
-    def task_ranking(self, task_prompt: str) -> List[float]:
+    def task_ranking(self, task_prompt: str) -> List[int]:
         """
         Task method for Ranking
             Input - Task Prompt (includes items to rank)

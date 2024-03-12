@@ -1,0 +1,8 @@
+{
+    "challenge_id": "user-behavior-alignment",
+    "authors": [
+      "aicrowd-bot"
+    ],
+    "gpu": true,
+    "description": "(optional) description about your awesome agent"
+}

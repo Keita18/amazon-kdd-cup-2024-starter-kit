@@ -111,7 +111,7 @@ def run_and_evaluate(data_df, max_eval_rows, print_interval=200):
     print(f"Overall score {track_wise_score}")
 
 if __name__ == "__main__":
-    DATA_FILENAME = './data/tracks/track3_rephrase.json'
+    DATA_FILENAME = './data/phase1_track3.json'
     data_df = pd.read_json(DATA_FILENAME, lines=True)
     MAX_EVAL_ROWS = 100000
     run_and_evaluate(data_df, MAX_EVAL_ROWS)

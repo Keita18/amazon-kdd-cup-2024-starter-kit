@@ -68,12 +68,12 @@ class ShoppingBenchTaskParsers:
         Parses a ranking task response.
 
         Parameters:
-            response (str): A JSON string representing the ordered list of ranks.
+            response (str): A string representing the ordered list of ranks.
 
         Returns:
             list: A list of ranks if the input is valid, otherwise ignore non numeric list elements.
         """
-        return self._parse_json_list(response, expected_type=float)
+        return self._parse_list(response, expected_type=float)
 
     def _task_generation_parser(self, response: str) -> str:
         """
@@ -92,31 +92,31 @@ class ShoppingBenchTaskParsers:
         Parses a retrieval task response.
 
         Parameters:
-            response (str): A JSON string representing the indexes of selected items.
+            response (str): A string representing the indexes of selected items.
 
         Returns:
             list: A list of selected item indexes if the input is valid, otherwise ignore non numeric list elements.
         """
-        return self._parse_json_list(response, expected_type=int)
+        return self._parse_list(response, expected_type=int)
 
     def _task_named_entity_recognition_parser(self, response: str) -> list:
         """
         Parses a named entity recognition task response.
 
         Parameters:
-            response (str): A JSON string representing the list of identified entities.
+            response (str): A string representing the list of identified entities.
 
         Returns:
             list: A list of entity names if the input is valid.
         """
-        return self._parse_json_list(response, expected_type=str)
+        return self._parse_list(response, expected_type=str)
 
-    def _parse_json_list(self, response: str, expected_type: type) -> list:
+    def _parse_list(self, response: str, expected_type: type) -> list:
         """
-        A helper method to parse a JSON string into a list with elements of an expected type.
+        A helper method to parse a string into a list with elements of an expected type.
 
         Parameters:
-            response (str): The JSON string to parse.
+            response (str): The string to parse.
             expected_type (type): The expected type of elements in the list.
 
         Returns:
@@ -220,9 +220,9 @@ if __name__ == "__main__":
     # Expected output: -1 (indicating an invalid response)
 
     # RANKING TASK FAILURE EXAMPLE
-    # Non-JSON response for a ranking task
+    # Non-list response for a ranking task
     ranking_parser = ShoppingBenchTaskParsers("ranking")
-    ranking_bad_response = "not a json string"  # Invalid JSON format
+    ranking_bad_response = "not a valid list"  # Invalid list format
     print(
         "Ranking Task Failure Case:",
         ranking_parser.parse(ranking_bad_response),
@@ -240,7 +240,7 @@ if __name__ == "__main__":
     # Expected output: '' (an empty string indicating an invalid or empty response)
 
     # RETRIEVAL TASK FAILURE EXAMPLE
-    # Incorrect JSON format for a retrieval task
+    # Incorrect element format for a retrieval task
     retrieval_parser = ShoppingBenchTaskParsers("retrieval")
     retrieval_bad_response = "[1, 'a']"  # Contains a non-integer
     print(
@@ -250,7 +250,7 @@ if __name__ == "__main__":
     # Expected output: [1] (ignores invalid non-integer values)
 
     # NAMED ENTITY RECOGNITION (NER) TASK FAILURE EXAMPLE
-    # Non-list JSON or incorrect entity format for an NER task
+    # Non-list or incorrect entity format for an NER task
     ner_parser = ShoppingBenchTaskParsers("named_entity_recognition")
     ner_bad_response = '{"entity": "New York"}'  # Not a list, incorrect format
     print("NER Task Failure Case:", ner_parser.parse(ner_bad_response))

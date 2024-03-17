@@ -1,261 +1,246 @@
-#!/usr/bin/env python3
 import ast
 
 
 class ShoppingBenchTaskParsers:
     """
-    A class for parsing responses from different types of tasks in a shopping bench scenario.
+    A class designed to parse responses from different task types in
+    the ShopBench - MultiTask Online Shopping Challenge for LLMs.
+    It supports a variety of task types such as multiple choice, ranking, generation, retrieval,
+    and named entity recognition, each with its own specific parsing logic to format the raw
+    response strings into structured data.
 
     Attributes:
-        task_type (str): The type of task for which the parser is instantiated.
+        task_type (str): The type of task the parser is set up to handle. Valid task types
+                         include 'multichoice', 'ranking', 'generation', 'retrieval',
+                         and 'named_entity_recognition'.
     """
 
     def __init__(self, task_type: str) -> None:
         """
-        Initializes the parser with a specific task type.
+        Initializes the parser for a specific task type.
 
         Parameters:
-            task_type (str): The type of task, e.g., 'multichoice', 'ranking', etc.
+            task_type (str): Specifies the task type this parser instance will handle.
         """
         self.task_type = task_type
 
     def parse(self, response: str) -> any:
         """
-        Parses the response based on the task type.
+        Parses a given response string according to the task type of the parser, and returns
+        a structured representation of that response.
 
         Parameters:
-            response (str): The raw response string from the model.
+            response (str): The raw response string obtained from performing the task.
 
         Returns:
-            The parsed response, formatted according to the task type's requirements.
+            A parsed and appropriately formatted response suitable for the parser's task type.
+            The format of the return value varies with the task type.
         """
-        # Mapping task types to their respective parsing methods.
+        # Map of task types to their corresponding parsing methods.
         task_parser_methods = {
-            "multichoice": self._task_multichoice_parser,
-            "ranking": self._task_ranking_parser,
-            "generation": self._task_generation_parser,
-            "retrieval": self._task_retrieval_parser,
-            "named_entity_recognition": self._task_named_entity_recognition_parser,
+            "multichoice": self._parse_multichoice,
+            "ranking": self._parse_ranking,
+            "generation": self._parse_generation,
+            "retrieval": self._parse_retrieval,
+            "named_entity_recognition": self._parse_named_entity_recognition,
         }
 
-        # Retrieve the parser method based on the task type.
+        # Attempt to retrieve the appropriate parser method for the task type.
         parser_method = task_parser_methods.get(self.task_type)
 
-        if parser_method is not None:
+        # Execute the parser method if found, otherwise raise an error.
+        if parser_method:
             return parser_method(response)
         else:
             raise NotImplementedError(
-                f"Task type {self.task_type} not implemented"
+                f"Task type '{self.task_type}' is not supported."
             )
 
-    def _task_multichoice_parser(self, response: str) -> int:
+    def _parse_multichoice(self, response: str) -> int:
         """
-        Parses a multichoice task response.
+        Parses a response from a multiple-choice task.
+
+        Assumes the first character of the response string indicates the chosen option.
 
         Parameters:
-            response (str): A string representing the selected option's index.
+            response (str): The raw response string.
 
         Returns:
-            int: The index of the selected option, or -1 if the input is invalid.
+            An integer representing the selected option. Returns -1 if the parsing fails due to
+            an invalid response format.
         """
         try:
-            return int(response.strip())
+            return int(response.strip()[0])
         except ValueError:
             return -1
 
-    def _task_ranking_parser(self, response: str) -> list:
+    def _parse_ranking(self, response: str) -> list:
         """
-        Parses a ranking task response.
+        Parses a ranking task response into a list of ranked items.
+
+        Expects a string with numeric values separated by commas, indicating the ranking order.
 
         Parameters:
-            response (str): A string representing the ordered list of ranks.
+            response (str): The raw response string.
 
         Returns:
-            list: A list of ranks if the input is valid, otherwise ignore non numeric list elements.
+            A list of integers representing the items in ranked order. Limits to the first 5 unique
+            elements. Returns an empty list if duplicates are found or parsing fails.
         """
-        return self._parse_list(response, expected_type=float)
+        # Keep only numeric characters and specific punctuation.
+        cleaned_response = "".join(
+            c for c in response if c.isnumeric() or c in ["[", "]", ",", " "]
+        )
 
-    def _task_generation_parser(self, response: str) -> str:
+        # Convert to list of integers
+        ranked_items = []
+        for item in cleaned_response.split(","):
+            try:
+                # Attempt to convert each item to an integer and add it to the list.
+                ranked_items.append(int(item))
+            except ValueError:
+                pass  # Skip non-numeric items.
+
+        # Consider only the first 5 unique elements.
+        ranked_items = ranked_items[:5]
+
+        # If there are duplicates, empty the list
+        if len(ranked_items) != len(set(ranked_items)):
+            ranked_items = []
+        return ranked_items
+
+    def _parse_generation(self, response: str) -> str:
         """
-        Parses a generation task response.
+        Parses a response from a generation task by trimming whitespace.
+
+        This method primarily cleans up the response string for presentation or further processing.
 
         Parameters:
-            response (str): The generated text response.
+            response (str): The raw response string.
 
         Returns:
-            str: The stripped response text.
+            A trimmed version of the response string.
         """
         return response.strip()
 
-    def _task_retrieval_parser(self, response: str) -> list:
+    def _parse_retrieval(self, response: str) -> list:
         """
-        Parses a retrieval task response.
+        Parses a retrieval task response, extracting the identifiers of retrieved items.
+
+        The response is expected to contain numeric values separated by commas.
 
         Parameters:
-            response (str): A string representing the indexes of selected items.
+            response (str): The raw response string.
 
         Returns:
-            list: A list of selected item indexes if the input is valid, otherwise ignore non numeric list elements.
+            A list of integers representing the first 3 unique retrieved item indices.
         """
-        return self._parse_list(response, expected_type=int)
+        # Similar to ranking parser, but only returns the first 3 elements.
+        cleaned_response = "".join(
+            c for c in response if c.isnumeric() or c in ["[", "]", ",", " "]
+        )
 
-    def _task_named_entity_recognition_parser(self, response: str) -> list:
+        # Convert to list of integers
+        response = []
+        for item in cleaned_response.split(","):
+            try:
+                # Attempt to convert each item to an integer and add it to the list.
+                response.append(int(item))
+            except ValueError:
+                pass  # Skip non-numeric items.
+
+        # consider only the first 3 elements
+        retrieved_items = response[:3]
+
+        return retrieved_items
+
+    def _parse_named_entity_recognition(self, response: str) -> list:
         """
-        Parses a named entity recognition task response.
+        Parses a response from a named entity recognition (NER) task.
+
+        Can handle both list-like string inputs or comma-separated entities in a plain string.
 
         Parameters:
-            response (str): A string representing the list of identified entities.
+            response (str): The raw response string.
 
         Returns:
-            list: A list of entity names if the input is valid.
-        """
-        return self._parse_list(response, expected_type=str)
-
-    def _parse_list(self, response: str, expected_type: type) -> list:
-        """
-        A helper method to parse a string into a list with elements of an expected type.
-
-        Parameters:
-            response (str): The string to parse.
-            expected_type (type): The expected type of elements in the list.
-
-        Returns:
-            list: A list of elements of the expected type, or ignore items if parsing fails.
+            A list of named entities extracted from the response. Attempts to parse the response as a
+            literal list; falls back to splitting by commas if that fails.
         """
         try:
-            parsed_response = ast.literal_eval(response)
-            if not isinstance(parsed_response, list):
-                return []
-
-            sanitized_response = []
-            for item in parsed_response:
-                try:
-                    sanitized_response.append(expected_type(item))
-                except (ValueError, TypeError) as e:
-                    pass
-            return sanitized_response
-        except SyntaxError:
-            return []
+            # Attempt to interpret the response as a literal list.
+            entities = ast.literal_eval(response)
+            if isinstance(entities, list) and all(
+                isinstance(item, str) for item in entities
+            ):
+                return entities
+        except (SyntaxError, ValueError):
+            # Fallback: split the string by commas and strip whitespace.
+            return [entity.strip() for entity in response.split(",")]
 
 
 if __name__ == "__main__":
-    # This section demonstrates the use of the ShoppingBenchTaskParsers class
-    # for different types of tasks. For each task, we initialize a parser,
-    # provide it with a response string, and then output the parsed result.
+    # Example usage of the ShoppingBenchTaskParsers class for various task types.
 
-    # MULTICHOICE TASK EXAMPLE
-    # Initialize the parser for a multichoice task
-    multichoice_parser = ShoppingBenchTaskParsers("multichoice")
-    # Example response string for a multichoice task (correct option is 2)
-    multichoice_response = "2"
-    # Parse the response and print the result
+    # MULTICHOICE EXAMPLE
+    multic_choice_parser = ShoppingBenchTaskParsers("multichoice")
+    print("Multichoice Example:")
+    print(multic_choice_parser.parse("2"))  # Expected output: 2
     print(
-        "Multichoice Task Parsing Result:",
-        multichoice_parser.parse(multichoice_response),
-    )
-    # Expected output: 2
+        multic_choice_parser.parse("a")
+    )  # Expected output (failure case): -1
+    print()
 
-    # RANKING TASK EXAMPLE
-    # Initialize the parser for a ranking task
+    # RANKING EXAMPLE
     ranking_parser = ShoppingBenchTaskParsers("ranking")
-    # Example response string for a ranking task (items ranked as 3rd, 1st, 2nd)
-    ranking_response = "[3, 1, 2]"
-    # Parse the response and print the result
+    print("Ranking Example:")
     print(
-        "Ranking Task Parsing Result:", ranking_parser.parse(ranking_response)
-    )
-    # Expected output: [3.0, 1.0, 2.0]
+        ranking_parser.parse("1, 2, 3, 4, 5")
+    )  # Expected output: [1, 2, 3, 4, 5]
+    print(
+        ranking_parser.parse("[1, 2, 2, 3]")
+    )  # Expected output (failure case): [] # because of repeating numbers
+    print(
+        ranking_parser.parse("1, 4, 5, aicrowd, 6")
+    )  # Expected output: [1, 4, 5, 6] # remove alphanumeric chars
 
-    # GENERATION TASK EXAMPLE
-    # Initialize the parser for a text generation task
+    print()
+
+    # GENERATION EXAMPLE
     generation_parser = ShoppingBenchTaskParsers("generation")
-    # Example response string for a generation task
-    generation_response = (
-        "This is a generated response based on the input prompt."
-    )
-    # Parse the response and print the result
+    print("Generation Example:")
     print(
-        "Generation Task Parsing Result:",
-        generation_parser.parse(generation_response),
-    )
-    # Expected output: This is a generated response based on the input prompt.
+        generation_parser.parse("This is a generated response")
+    )  # Expected output: 'This is a generated response.'
+    print()
 
-    # RETRIEVAL TASK EXAMPLE
-    # Initialize the parser for a retrieval task
+    # RETRIEVAL EXAMPLE
     retrieval_parser = ShoppingBenchTaskParsers("retrieval")
-    # Example response string for a retrieval task (items at indexes 0 and 2 are relevant)
-    retrieval_response = "[0, 2]"
-    # Parse the response and print the result
+    print("Retrieval Example:")
     print(
-        "Retrieval Task Parsing Result:",
-        retrieval_parser.parse(retrieval_response),
-    )
-    # Expected output: [0, 2]
+        retrieval_parser.parse("100, 200, 300")
+    )  # Expected output: [100, 200, 300]
+    print(
+        retrieval_parser.parse("100, 200")
+    )  # Expected output (shorter than 3): [100, 200]
+    print(
+        retrieval_parser.parse("100, 200, jjhg")
+    )  # Expected output (removed alphhanumeric chars): [100, 200]
+    print(
+        retrieval_parser.parse("100, 200, 300, 400")
+    )  # Expected output (only consider first 3 elems): [100, 200, 300]
 
-    # NAMED ENTITY RECOGNITION (NER) TASK EXAMPLE
-    # Initialize the parser for a named entity recognition task
+    print()
+
+    # NAMED ENTITY RECOGNITION EXAMPLE
     ner_parser = ShoppingBenchTaskParsers("named_entity_recognition")
-    # Example response string for an NER task
-    ner_response = '["New York", "ShopBench"]'
-    # Parse the response and print the result
-    print("NER Task Parsing Result:", ner_parser.parse(ner_response))
-    # Expected output: ['New York', 'ShopBench']
-
-    # This demonstrates the flexible and effective parsing capabilities of the
-    # ShoppingBenchTaskParsers class across a variety of task types.
-
-    # Failure Case Examples for ShoppingBenchTaskParsers
-    # These examples illustrate how the parser handles incorrect or unexpected inputs.
-
-    print("=== FAILURE CASES ===\n")
-
-    # MULTICHOICE TASK FAILURE EXAMPLE
-    # Non-integer response for a multichoice task
-    multichoice_parser = ShoppingBenchTaskParsers("multichoice")
-    multichoice_bad_response = "abc"  # Invalid response (not an integer)
+    print("Named Entity Recognition Example:")
     print(
-        "Multichoice Task Failure Case:",
-        multichoice_parser.parse(multichoice_bad_response),
-    )
-    # Expected output: -1 (indicating an invalid response)
-
-    # RANKING TASK FAILURE EXAMPLE
-    # Non-list response for a ranking task
-    ranking_parser = ShoppingBenchTaskParsers("ranking")
-    ranking_bad_response = "not a valid list"  # Invalid list format
+        ner_parser.parse("['New York', 'ShopBench', 'Amazon']")
+    )  # Expected output: ['New York', 'ShopBench', 'Amazon']
     print(
-        "Ranking Task Failure Case:",
-        ranking_parser.parse(ranking_bad_response),
-    )
-    # Expected output: [] (indicating an inability to parse the response)
-
-    # GENERATION TASK FAILURE EXAMPLE
-    # Empty or whitespace-only response for a generation task
-    generation_parser = ShoppingBenchTaskParsers("generation")
-    generation_bad_response = "    "  # Only spaces
+        ner_parser.parse("New York, ShopBench, Amazon")
+    )  # Expected output: ['New York', 'ShopBench', 'Amazon']
     print(
-        "Generation Task Failure Case:",
-        f"'{generation_parser.parse(generation_bad_response)}'",
-    )
-    # Expected output: '' (an empty string indicating an invalid or empty response)
-
-    # RETRIEVAL TASK FAILURE EXAMPLE
-    # Incorrect element format for a retrieval task
-    retrieval_parser = ShoppingBenchTaskParsers("retrieval")
-    retrieval_bad_response = "[1, 'a']"  # Contains a non-integer
-    print(
-        "Retrieval Task Failure Case:",
-        retrieval_parser.parse(retrieval_bad_response),
-    )
-    # Expected output: [1] (ignores invalid non-integer values)
-
-    # NAMED ENTITY RECOGNITION (NER) TASK FAILURE EXAMPLE
-    # Non-list or incorrect entity format for an NER task
-    ner_parser = ShoppingBenchTaskParsers("named_entity_recognition")
-    ner_bad_response = '{"entity": "New York"}'  # Not a list, incorrect format
-    print("NER Task Failure Case:", ner_parser.parse(ner_bad_response))
-    # Expected output: [] (indicating the response could not be parsed as a list of entities)
-
-    print(
-        "\nThese examples demonstrate how the parser handles various incorrect inputs."
-    )
+        ner_parser.parse("[New York, ShopBench, Amazon]")
+    )  # Expected output (failure case - extra '[' characters added to boundary elems]): ['[New York', 'ShopBench', 'Amazon]']

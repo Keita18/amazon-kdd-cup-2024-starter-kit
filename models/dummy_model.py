@@ -1,52 +1,43 @@
 from typing import List
+import random
+import os
+
+# please use this seed consistently across your code
+AICROWD_RUN_SEED = int(os.getenv("AICROWD_RUN_SEED", 3142))
 
 
 class DummyModel:
     """
-    Note to participants:
-        Example class to show the different functions to be implemented for each type of task
-        Make sure to follow the data types as mentioned in the function definitions
+    TODO
     """
+
     def __init__(self):
-        """ Initialize your models here """
-        pass
-    
-    def task_multichoice(self, task_prompt: str) -> int:
-        """
-        Task method for Multiple choice questions
-            Input - Task Prompt (includes choices)
-            Output - Single integer index among ones given in the input
-        """
-        return 0
+        """Initialize your models here"""
+        random.seed(AICROWD_RUN_SEED)
 
-    def task_ranking(self, task_prompt: str) -> List[int]:
+    def predict(self, prompt: str, is_multiple_choice: bool) -> str:
         """
-        Task method for Ranking
-            Input - Task Prompt (includes items to rank)
-            Output - Ordered List of ranks for each item
-        """
-        return [1, 0, 2, 3]
+        Standard inferface for all tasks and tracks.
 
-    def task_generation(self, task_prompt: str) -> str:
-        """
-        Task method for Generation
-            Input - Task Prompt describing the required generation
-            Output - Generated text as per task prompt
-        """
-        return "This is a test"
+        The goal is for your model to be able to infer the task type,
+        and respond with a string that is compatible with the task specific parser.
 
-    def task_retrieval(self, task_prompt: str) -> List[int]:
-        """
-       Task method for Generation
-            Input - Task Prompt describing the items which need to be selected from (includes indexes of items)
-            Output - Unordered list of indexes selected (must be a python list even if single item)
-        """
-        return [0, 1, 2]
 
-    def task_named_entity_recognition(self, task_prompt: str) -> List[str]:
+        Note: Even if the development dataset has the task_type information,
+        During the actual evaluations, your code will only have access to the prompt,
+        and the boolean variable indicating if its a multiple choice question.
         """
-        Task method for Named Entity Recognition
-            Input - Task Prompt describing the named entity recognition task
-            Output - Unordered list of one or more entity names (must be a python list even if single item)
-        """
-        return ["food", "gpu"]
+
+        potential_response = [1, 2, 3, 4]
+        if is_multiple_choice:
+            return str(random.choice(potential_response))
+        else:
+            # For Ranking, Retrieval, and Named Entity Recognition tasks
+            # the expected response is a string that can be parsed with
+            # `ast.literal_eval` (see parsers.py for more details)
+            random.shuffle(potential_response)
+            return str(potential_response)
+
+            # Note: For the generation task, the expected response is a string
+            # And, as this is a dummy response, we are just returning the
+            # shuffled version of list, but in your case, it can be any string

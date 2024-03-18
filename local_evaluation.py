@@ -4,7 +4,7 @@ import torch
 import numpy as np
 import os
 
-from sentence_transformers import SentenceTransformer
+
 import metrics
 import parsers
 
@@ -145,7 +145,7 @@ def aggregate_scores(per_task_metrics):
         overall_score = (
             np.mean(sample_scores)
             if metric != "micro f1"
-            else metrics.compute_f1_score(sample_scores)
+            else metrics.calculate_f1_score(sample_scores)
         )
 
         overall_metrics["task_name"].append(task_name)
@@ -165,26 +165,28 @@ def get_evaluation_methods():
     Returns:
     - A dictionary mapping metric names to their respective evaluation functions.
     """
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    sentence_all_lm = SentenceTransformer("all-MiniLM-L6-v2").to(device)
-    sentence_multilingual = SentenceTransformer(
-        "paraphrase-multilingual-MiniLM-L12-v2"
-    ).to(device)
-
     return {
-        "accuracy": metrics.accuracy,
-        "hit rate@3": metrics.hit_rate_3,
-        "rougel": metrics.rougel,
-        "sent-transformer": lambda g, t: metrics.sent_transformer(
-            g, t, sentence_all_lm
+        "accuracy": metrics.calculate_per_sample_accuracy,
+        "hit rate@3": metrics.calculate_hit_rate_3,
+        "rougel": metrics.calculate_rougel,
+        "sent-transformer": lambda generated_text, reference_texts: metrics.calculate_cosine_similarity(
+            generated_text=generated_text, 
+            reference_texts=reference_texts, 
+            model_name="all-MiniLM-L6-v2"
         ),
-        "multilingual-sent-transformer": lambda g, t: metrics.sent_transformer(
-            g, t, sentence_multilingual
+        "multilingual-sent-transformer": lambda generated_text, reference_texts: metrics.calculate_cosine_similarity(
+            generated_text=generated_text, 
+            reference_texts=reference_texts, 
+            model_name="paraphrase-multilingual-MiniLM-L12-v2"
         ),
-        "micro f1": metrics.tp_fp_fn,
-        "ndcg": metrics.ndcg_eval,
-        "bleu": metrics.bleu,
-        "jp-bleu": lambda g, t: metrics.bleu(g, t, jp=True),
+        "micro f1": metrics.calculate_true_positive_false_positives_false_negatives, 
+        "ndcg": metrics.calculate_ndcg,
+        "bleu": metrics.calculate_bleu_score,
+        "jp-bleu": lambda generated_text, reference_text: metrics.calculate_bleu_score(
+            generated_text=generated_text, 
+            reference_text=reference_text, 
+            is_japanese=True
+        ),
     }
 
 

@@ -1,7 +1,7 @@
 ![AMAZON KDD CUP 2024: MULTI-TASK ONLINE SHOPPING CHALLENGE FOR LLMS](https://images.aicrowd.com/raw_images/challenges/social_media_image_file/1139/566667103918dae81381.jpg)
 [![Discord](https://img.shields.io/discord/565639094860775436.svg)](https://discord.gg/yWurtB2huX)
 
-# [Amazon KDD CUP 2024: Multi-Task Online Shopping Challenge for LLMs](https://www.aicrowd.com/challenges/amazon-kdd-cup-2024-multi-task-online-shopping-challenge-for-llms) Starter Kit
+# 🛒 [Amazon KDD CUP 2024: Multi-Task Online Shopping Challenge for LLMs](https://www.aicrowd.com/challenges/amazon-kdd-cup-2024-multi-task-online-shopping-challenge-for-llms) Starter Kit
 
 
 This repository is the Amazon KDD Cup 2024 **Submission template and Starter kit**! Clone the repository to compete now!
@@ -11,7 +11,23 @@ This repository is the Amazon KDD Cup 2024 **Submission template and Starter kit
 *  **The procedure** for best practices and information on how we evaluate your model, etc.
 *  **Starter code** for you to get started!
 
-#  Competition Overview
+# Table of Contents
+
+1. [Competition Overview](#competition-overview)
+2. [Dataset](#dataset)
+3. [Tasks](#tasks)
+4. [Evaluation Metrics](#evaluation-metrics)
+5. [Getting Started](#getting-started)
+   - [How to write your own model?](#how-to-write-your-own-model)
+   - [How to start participating?](#how-to-start-participating)
+      - [Setup](#setup)
+      - [How to make a submission?](#how-to-make-a-submission)
+      - [What hardware does my code run on?](#what-hardware-does-my-code-run-on)
+      - [How are my model responses parsed by the evaluators?](#how-are-my-model-responses-parsed-by-the-evaluators)
+6. [Important Links](#important-links)
+
+
+# 📖 Competition Overview
 
 Online shopping is complex, involving various tasks from browsing to purchasing, all requiring insights into customer behavior and intentions. This necessitates multi-task learning models that can leverage shared knowledge across tasks. Yet, many current models are task-specific, increasing development costs and limiting effectiveness. Large language models (LLMs) have the potential to change this by handling multiple tasks through a single model with minor prompt adjustments. Furthermore, LLMs can also improve customer experiences by providing interactive and timely recommendations. However, online shopping, as a highly specified domain, features a wide range of domain-specific concepts (e.g. brands, product lines) and knowledge (e.g. which brand produces which products), making it challenging to adapt existing powerful LLMs from general domains to online shopping.
 
@@ -65,7 +81,7 @@ ShopBench involves a total of 5 types of tasks, all of which are re-formulated t
 To test the generalization ability of the solutions, the development set will only cover a part of all 57 tasks, resulting to tasks that are unseen throughout the challenge. However, all 5 task types will be covered in the development set to help participants understand the prompts and output formats.   
 
 
-## Evaluation Metrics
+## 📏 Evaluation Metrics
 ShopBench includes multiple types of tasks, each requiring specific metrics for evaluation. The metrics selected are as follows:
 - **Multiple Choice:** Accuracy is used to measure the performance for multiple choice questions.
 - **Ranking:** Normalized Discounted Cumulative Gain (NDCG) is used to evaluate ranking tasks.
@@ -82,18 +98,18 @@ Since all these metrics range from [0, 1], we calculate the average metric for a
 
 Please refer to [local_evaluation.py](local_evaluation.py) for more details on how we will evaluate your submissions.
 
-#  Getting Started
+# 🏁 Getting Started
 1. **Sign up** to join the competition [on the AIcrowd website](https://www.aicrowd.com/challenges/amazon-kdd-cup-2024-multi-task-online-shopping-challenge-for-llms).
 2. **Fork** this starter kit repository. You can use [this link](https://gitlab.aicrowd.com/aicrowd/challenges/amazon-kdd-cup-2024/amazon-kdd-cup-2024-starter-kit/-/forks/new) to create a fork.
 3. **Clone** your forked repo and start developing your model.
 4. **Develop** your model(s) following the template in [how to write your own model](#how-to-write-your-own-model) section.
 5. [**Submit**](#how-to-make-a-submission) your trained models to [AIcrowd Gitlab](https://gitlab.aicrowd.com) for evaluation [(full instructions below)](#how-to-make-a-submission). The automated evaluation setup will evaluate the submissions on the private datasets and report the metrics on the leaderboard of the competition.
 
-# How to write your own model?
+# ✍️ How to write your own model?
 
 Please follow the instructions in [models/README.md](models/README.md) for instructions and examples on how to write your own models for this competition.
 
-# How to start participating?
+# 🚴 How to start participating?
 
 ## Setup
 
@@ -127,19 +143,19 @@ You can add your SSH Keys to your GitLab account by going to your profile settin
 7. Make a submission as described in [How to make a submission](#how-to-make-a-submission) section.
 
 
-## How to make a submission?
+## 📮 How to make a submission?
 
 Please follow the instructions in [docs/submission.md](docs/submission.md) to make your first submission. 
 This also includes instructions on [specifying your software runtime](docs/submission.md#how-do-i-specify-my-software-runtime-dependencies), [code structure](docs/submission.md#what-should-my-code-structure-be-like), [submitting to different tracks](docs/submission.md#how-do-i-submit-to-different-tracks-).
 
 **Note**: **Remember to accept the Challenge Rules** on the challenge page, **and** the task page before making your first submission.
 
-## What hardware does my code run on ?
+## 💻 What hardware does my code run on ?
 You can find more details about the hardware and system configuration in [docs/hardware-and-system-config.md](docs/hardware-and-system-config.md).
 In summary, we provide you `2` x [[NVIDIA T4 GPUs](https://www.nvidia.com/en-us/data-center/tesla-t4/)] in Phase 1; and `4` x [[NVIDIA T4 GPUs](https://www.nvidia.com/en-us/data-center/tesla-t4/)] in Phase 2.
 
 
-## How are my model responses parsed by the evaluators ?
+## 🧩 How are my model responses parsed by the evaluators ?
 Please refer to [parsers.py](parsers.py) for more details on how we parse your model responses.
 
 
@@ -148,7 +164,5 @@ Please refer to [parsers.py](parsers.py) for more details on how we parse your m
 # 📎 Important links
 
 - 💪 Challenge Page: https://www.aicrowd.com/challenges/amazon-kdd-cup-2024-multi-task-online-shopping-challenge-for-llms
-
 - 🗣 Discussion Forum: https://www.aicrowd.com/challenges/amazon-kdd-cup-2024-multi-task-online-shopping-challenge-for-llms/discussion
-
 - 🏆 Leaderboard: https://www.aicrowd.com/challenges/amazon-kdd-cup-2024-multi-task-online-shopping-challenge-for-llms/leaderboards

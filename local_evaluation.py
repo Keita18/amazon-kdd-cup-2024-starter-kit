@@ -5,6 +5,7 @@ from tqdm.auto import tqdm
 from sentence_transformers import SentenceTransformer
 
 import metrics
+import parsers
 
 
 def print_sample(i, generation, truth, metric, score):
@@ -19,36 +20,39 @@ def print_sample(i, generation, truth, metric, score):
     print()
 
 
-def run_and_evaluate(data_df, max_eval_rows, print_interval=200):
+if __name__ == "__main__":
 
-    if max_eval_rows < len(data_df):
-        data_df_eval = data_df.sample(max_eval_rows)
-    else:
-        data_df_eval = data_df
+    # Load Development Data
+    DATA_FILENAME = "./data/development.json"
+    data_df = pd.read_json(DATA_FILENAME, lines=True)
 
-    # Run model
+    # Load UserModel
+    from models.user_config import UserModel
+
+    model = UserModel()
+
+    # Generate Responses
     outputs = []
-    task_methods = {
-        "multiple-choice": model.task_multichoice,
-        "generation": model.task_generation,
-        "retrieval": model.task_retrieval,
-        "ranking": model.task_ranking,
-        "named_entity_recognition": model.task_named_entity_recognition,
-    }
-
-    for _, row in tqdm(
-        data_df_eval.iterrows(), total=len(data_df_eval), desc="Processing"
+    for _rowd_idx, row in tqdm(
+        data_df.iterrows(),
+        total=len(data_df),
+        desc="Generating Responses",
     ):
-        task_type = row["task_type"]
-        if task_type not in task_methods:
-            raise NotImplementedError(f"No task method for {task_type=}")
+        print("=" * 100)
+        is_multiple_choice = row["task_type"] == "multiple-choice"
+        prompt = row["input_field"]
+        model_output = model.predict(prompt, is_multiple_choice)
+        outputs.append(model_output)
 
-        task_prompt = row["input_field"]
-        task_fn = task_methods[task_type]
-        task_output = task_fn(task_prompt)
-        outputs.append(task_output)
+        print(prompt, model_output)
+
+    # Merge outputs into DF
+    data_df["outputs"] = outputs
+    print(data_df)
 
     # Evaluate
+    print_interval = 1
+
     device = "cuda" if torch.cuda.is_available() else "cpu"
     sentence_all_lm = SentenceTransformer("all-MiniLM-L6-v2").to(device)
     sentece_multilingual = SentenceTransformer(
@@ -71,84 +75,67 @@ def run_and_evaluate(data_df, max_eval_rows, print_interval=200):
         "jp-bleu": lambda g, t: metrics.bleu(g, t, jp=True),
     }
 
+    task_parsers = {
+        "multiple-choice": parsers.ShoppingBenchTaskParsers("multichoice"),
+        "generation": parsers.ShoppingBenchTaskParsers("generation"),
+        "retrieval": parsers.ShoppingBenchTaskParsers("retrieval"),
+        "ranking": parsers.ShoppingBenchTaskParsers("ranking"),
+        "named_entity_recognition": parsers.ShoppingBenchTaskParsers(
+            "named_entity_recognition"
+        ),
+    }
+
     per_task_metrics = {}
 
-    for ri, row in tqdm(
-        data_df_eval.iterrows(), total=len(data_df_eval), desc="Evaluating"
+    for row_idx, row in tqdm(
+        data_df.iterrows(), total=len(data_df), desc="Evaluating"
     ):
         metric = row["metric"]
         if metric not in eval_methods:
             raise NotImplementedError(f"No metric for {metric=}")
 
-        task_name = row["task_name"]
+        task_type = row["task_type"]
+
+        task_name = f"{task_type}---{metric}"
         per_task_metrics.setdefault(
             task_name, {"metric": metric, "sample_score": []}
         )
 
         gt = row["output_field"]
-        model_output = outputs[ri]
+        model_output = task_parsers[task_type].parse(outputs[row_idx])
 
         eval_fn = eval_methods[metric]
         metric_score = eval_fn(model_output, gt)
         per_task_metrics[task_name]["sample_score"].append(metric_score)
         per_task_metrics[task_name]["sample_score"].append(metric_score)
 
-        if ri % print_interval == 0:
-            print_sample(ri, model_output, gt, metric, metric_score)
+        if row_idx % print_interval == 0:
+            print_sample(row_idx, outputs[row_idx], gt, metric, metric_score)
 
     # Aggregate scores
-    for k in per_task_metrics:
-        if per_task_metrics[k]["metric"] != "micro f1":
-            print(k, len(per_task_metrics[k]["sample_score"]))
-            per_task_metrics[k]["overall_metric"] = np.mean(
-                per_task_metrics[k]["sample_score"]
+    for task_name in per_task_metrics:
+        if per_task_metrics[task_name]["metric"] != "micro f1":
+            per_task_metrics[task_name]["overall_metric"] = np.mean(
+                per_task_metrics[task_name]["sample_score"]
             )
         else:
-            per_task_metrics[k]["overall_metric"] = metrics.compute_f1_score(
-                per_task_metrics[k]["sample_score"]
+            per_task_metrics[task_name]["overall_metric"] = (
+                metrics.compute_f1_score(
+                    per_task_metrics[task_name]["sample_score"]
+                )
             )
 
+    print(per_task_metrics)
+
     overall_metrics = {"task_name": [], "metric": [], "overall_score": []}
-    for k in per_task_metrics:
-        overall_metrics["task_name"].append(k)
-        overall_metrics["metric"].append(per_task_metrics[k]["metric"])
+    for task_name in per_task_metrics:
+        overall_metrics["task_name"].append(task_name)
+        overall_metrics["metric"].append(per_task_metrics[task_name]["metric"])
         overall_metrics["overall_score"].append(
-            per_task_metrics[k]["overall_metric"]
+            per_task_metrics[task_name]["overall_metric"]
         )
-    track_wise_score = np.mean(overall_metrics["overall_score"])
-    overall_metrics["task_name"].append("track_wise")
-    overall_metrics["metric"].append("track_wise")
-    overall_metrics["overall_score"].append(track_wise_score)
-    overall_metrics_df = pd.DataFrame(overall_metrics)
-    overall_metrics_df.to_json("scores.json", orient="records", lines=True)
-    print(f"Overall score {track_wise_score}")
 
-
-if __name__ == "__main__":
-
-    # Load Development Data
-    DATA_FILENAME = "./data/development.json"
-    data_df = pd.read_json(DATA_FILENAME, lines=True)
-
-    # Load UserModel
-    from models.user_config import UserModel
-
-    model = UserModel()
-
-    # Generate Responses
-
-    outputs = []
-    for _rowd_idx, row in tqdm(
-        data_df.iterrows(),
-        total=len(data_df),
-        desc="Generating Responses",
-    ):
-        print("=" * 100)
-        is_multiple_choice = row["task_type"] == "multiple-choice"
-        prompt = row["input_field"]
-        model_output = model.predict(prompt, is_multiple_choice)
-        outputs.append(model_output)
-
-        print(prompt, model_output)
-
-    # run_and_evaluate(data_df, MAX_EVAL_ROWS)
+    overall_metrics = pd.DataFrame(overall_metrics)
+    print(overall_metrics)
+    overall_score = overall_metrics["overall_score"].mean()
+    print(f"Overall Score: {overall_score}")

@@ -89,7 +89,7 @@ class ShoppingBenchTaskParsers:
         """
         # Keep only numeric characters and specific punctuation.
         cleaned_response = "".join(
-            c for c in response if c.isnumeric() or c in ["[", "]", ",", " "]
+            c for c in response if c.isnumeric() or c in [",", " "]
         )
 
         # Convert to list of integers
@@ -137,7 +137,7 @@ class ShoppingBenchTaskParsers:
         """
         # Similar to ranking parser, but only returns the first 3 elements.
         cleaned_response = "".join(
-            c for c in response if c.isnumeric() or c in ["[", "]", ",", " "]
+            c for c in response if c.isnumeric() or c in [",", " "]
         )
 
         # Convert to list of integers
@@ -174,6 +174,10 @@ class ShoppingBenchTaskParsers:
                 isinstance(item, str) for item in entities
             ):
                 return entities
+            else:
+                raise SyntaxError(
+                    "Unexpected Syntax error - fall back to comma separated list."
+                )
         except (SyntaxError, ValueError):
             # Fallback: split the string by commas and strip whitespace.
             return [entity.strip() for entity in response.split(",")]
@@ -198,7 +202,10 @@ if __name__ == "__main__":
         ranking_parser.parse("1, 2, 3, 4, 5")
     )  # Expected output: [1, 2, 3, 4, 5]
     print(
-        ranking_parser.parse("[1, 2, 2, 3]")
+        ranking_parser.parse("[1, 2, 3, 4, 5]")
+    )  # Expected output: [1, 2, 3, 4, 5] - tolerant to [, ]
+    print(
+        ranking_parser.parse("1, 2, 2, 3")
     )  # Expected output (failure case): [] # because of repeating numbers
     print(
         ranking_parser.parse("1, 4, 5, aicrowd, 6")
@@ -243,4 +250,8 @@ if __name__ == "__main__":
     )  # Expected output: ['New York', 'ShopBench', 'Amazon']
     print(
         ner_parser.parse("[New York, ShopBench, Amazon]")
-    )  # Expected output (failure case - extra '[' characters added to boundary elems]): ['[New York', 'ShopBench', 'Amazon]']
+    )  # failure case - not tolerant to [ if quotes not used
+    # - extra '[' characters added to boundary elems]): ['[New York', 'ShopBench', 'Amazon]']
+    # Expected output: ['[New York', 'ShopBench', 'Amazon]']
+
+    print(ner_parser.parse("[4, 1, 2, 3]"))

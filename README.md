@@ -13,19 +13,19 @@ This repository is the Amazon KDD Cup 2024 **Submission template and Starter kit
 
 # Table of Contents
 
-1. [Competition Overview](#competition-overview)
-2. [Dataset](#dataset)
-3. [Tasks](#tasks)
-4. [Evaluation Metrics](#evaluation-metrics)
-5. [Getting Started](#getting-started)
-   - [How to write your own model?](#how-to-write-your-own-model)
-   - [How to start participating?](#how-to-start-participating)
-      - [Setup](#setup)
-      - [How to make a submission?](#how-to-make-a-submission)
-      - [What hardware does my code run on?](#what-hardware-does-my-code-run-on)
-      - [How are my model responses parsed by the evaluators?](#how-are-my-model-responses-parsed-by-the-evaluators)
-6. [Frequently Asked Questions](#frequently-asked-questions)
-6. [Important Links](#important-links)
+1. [Competition Overview](#-competition-overview)
+2. [Dataset](#-dataset)
+3. [Tasks](#-tasks)
+4. [Evaluation Metrics](#-evaluation-metrics)
+5. [Getting Started](#-getting-started)
+   - [How to write your own model?](#-how-to-write-your-own-model)
+   - [How to start participating?](#-how-to-start-participating)
+      - [Setup](#-setup)
+      - [How to make a submission?](#-how-to-make-a-submission)
+      - [What hardware does my code run on?](#-what-hardware-does-my-code-run-on)
+      - [How are my model responses parsed by the evaluators?](#-how-are-my-model-responses-parsed-by-the-evaluators)
+6. [Frequently Asked Questions](#-frequently-asked-questions)
+6. [Important Links](#-important-links)
 
 
 # 📖 Competition Overview
@@ -104,7 +104,7 @@ Please refer to [local_evaluation.py](local_evaluation.py) for more details on h
 2. **Fork** this starter kit repository. You can use [this link](https://gitlab.aicrowd.com/aicrowd/challenges/amazon-kdd-cup-2024/amazon-kdd-cup-2024-starter-kit/-/forks/new) to create a fork.
 3. **Clone** your forked repo and start developing your model.
 4. **Develop** your model(s) following the template in [how to write your own model](#how-to-write-your-own-model) section.
-5. [**Submit**](#how-to-make-a-submission) your trained models to [AIcrowd Gitlab](https://gitlab.aicrowd.com) for evaluation [(full instructions below)](#how-to-make-a-submission). The automated evaluation setup will evaluate the submissions on the private datasets and report the metrics on the leaderboard of the competition.
+5. [**Submit**](#-how-to-make-a-submission) your trained models to [AIcrowd Gitlab](https://gitlab.aicrowd.com) for evaluation [(full instructions below)](#-how-to-make-a-submission). The automated evaluation setup will evaluate the submissions on the private datasets and report the metrics on the leaderboard of the competition.
 
 # ✍️ How to write your own model?
 
@@ -141,7 +141,7 @@ You can add your SSH Keys to your GitLab account by going to your profile settin
 
 6. Accept the Challenge Rules on the main [challenge page](https://www.aicrowd.com/challenges/amazon-kdd-cup-2024-multi-task-online-shopping-challenge-for-llms) by clicking on the **Participate** button. Also accept the Challenge Rules on the Task specific page (link on the challenge page) that you want to submit to.
 
-7. Make a submission as described in [How to make a submission](#how-to-make-a-submission) section.
+7. Make a submission as described in [How to make a submission](#-how-to-make-a-submission) section.
 
 
 ## 📮 How to make a submission?

@@ -5,9 +5,6 @@ This document is designed to assist you in making your initial submission smooth
 # Table of Contents
 
 1. [Specifying Software Runtime and Dependencies](#specifying-software-runtime-and-dependencies)
-    - [requirements.txt](#requirementstxt)
-    - [apt.txt](#apttxt)
-    - [Dockerfile](#dockerfile)
 2. [Code Structure Guidelines](#code-structure-guidelines)
 3. [Submitting to Different Tracks](#submitting-to-different-tracks)
 4. [Submission Entry Point](#submission-entry-point)

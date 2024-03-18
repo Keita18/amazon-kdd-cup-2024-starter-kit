@@ -127,7 +127,7 @@ You can add your SSH Keys to your GitLab account by going to your profile settin
 
 ## How to make a submission?
 
-Please follow the instructions in [docs/submission.md](ocs/submission.md) to make your first submission. 
+Please follow the instructions in [docs/submission.md](docs/submission.md) to make your first submission. 
 This also includes instructions on **specifying your software runtime**, **code structure**, **submitting to different tracks**.
 
 **Note**: **Remember to accept the Challenge Rules** on the challenge page, and task page before making your first submission.

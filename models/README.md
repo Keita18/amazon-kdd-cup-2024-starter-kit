@@ -7,7 +7,7 @@ For a streamlined experience, we suggest placing the code for all your models wi
 Your models should inherit from the `ShopBenchBaseModel` class found in [base_model.py](base_model.py). We provide an example model, `dummy_model.py`, to illustrate how you might structure your own model. Crucially, your model class must implement the `predict` method.
 
 ## Configuring Your Model
-To ensure your model is recognized and utilized correctly, please specify your model class name in the [`user_config.py`](user_config.py) file, using the `UserAgent` configuration.
+To ensure your model is recognized and utilized correctly, please specify your model class name in the [`user_config.py`](user_config.py) file, by following the instructions in the inline comments.
 
 ## Model Inputs and Outputs
 

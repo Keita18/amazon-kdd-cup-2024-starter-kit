@@ -2,6 +2,7 @@ import pandas as pd
 from tqdm import tqdm
 import torch
 import numpy as np
+import os
 
 from sentence_transformers import SentenceTransformer
 import metrics
@@ -205,7 +206,17 @@ def get_task_parsers():
 # Main execution function to load data, generate model outputs, evaluate, and aggregate scores
 def main():
     # Load development data
+    # Please download the development data from : https://www.aicrowd.com/challenges/meta-comprehensive-rag-benchmark-kdd-cup-2024/dataset_files
+    # and place it at: ./data/development.json
     DATA_FILENAME = "./data/development.json"
+
+    if not os.path.exists(DATA_FILENAME):
+        raise FileNotFoundError(
+            f"Development data file not found at {DATA_FILENAME}."
+            "Please download the development data from : https://www.aicrowd.com/challenges/meta-comprehensive-rag-benchmark-kdd-cup-2024/dataset_files"
+            "and place it at: ./data/development.json"
+        )
+
     data_df = load_development_data(DATA_FILENAME)
 
     # Load the model from the user's custom configuration

@@ -1,5 +1,7 @@
 import ast
 
+MAX_RESPONSE_CHARACTERS = 5000
+
 
 class ShoppingBenchTaskParsers:
     """
@@ -48,6 +50,9 @@ class ShoppingBenchTaskParsers:
         assert isinstance(
             response, str
         ), f"Response must be a string, but got {type(response)}"
+
+        # Consider only the first MAX_RESPONSE_CHARACTERS
+        response = response[:MAX_RESPONSE_CHARACTERS]
 
         # Attempt to retrieve the appropriate parser method for the task type.
         parser_method = task_parser_methods.get(self.task_type)

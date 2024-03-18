@@ -1,21 +1,37 @@
-# Making submission
+# Guide to Making Your First Submission
 
-This file will help you in making your first submission.
+This document is designed to assist you in making your initial submission smoothly. Below, you'll find step-by-step instructions on specifying your software runtime and dependencies, structuring your code, and finally, submitting your project. Follow these guidelines to ensure a smooth submission process.
 
-## How do I specify my software runtime / dependencies?
+# Table of Contents
 
-We accept submissions with custom runtime, so you don't need to worry about which libraries or framework to pick from.
+1. [Specifying Software Runtime and Dependencies](#specifying-software-runtime-and-dependencies)
+    - [requirements.txt](#requirementstxt)
+    - [apt.txt](#apttxt)
+    - [Dockerfile](#dockerfile)
+2. [Code Structure Guidelines](#code-structure-guidelines)
+3. [Submitting to Different Tracks](#submitting-to-different-tracks)
+4. [Submission Entry Point](#submission-entry-point)
+5. [Setting Up SSH Keys](#setting-up-ssh-keys)
+6. [Managing Large Model Files with Git LFS](#managing-large-model-files-with-git-lfs)
+    - [Why Use Git LFS?](#why-use-git-lfs)
+    - [Steps to Use Git LFS](#steps-to-use-git-lfs)
+    - [Handling Previously Committed Large Files](#handling-previously-committed-large-files)
+7. [How to Submit Your Code](#how-to-submit-your-code)
 
-The configuration files typically include `requirements.txt` (pypi packages), `apt.txt` (apt packages) or even your own `Dockerfile`.
 
-An example Dockerfile is provided in [utilities/_Dockerfile](utilities/_Dockerfile) which you can use as a starting point.
+## Specifying Software Runtime and Dependencies
 
-You can check detailed information about setting up runtime dependencies in the 👉 [docs/runtime.md](docs/runtime.md) file.
+Our platform supports custom runtime environments. This means you have the flexibility to choose any libraries or frameworks necessary for your project. Here’s how you can specify your runtime and dependencies:
 
-## What should my code structure be like?
+- **`requirements.txt`**: List any PyPI packages your project needs.
+- **`apt.txt`**: Include any apt packages required.
+- **`Dockerfile`**: Optionally, you can provide your own Dockerfile. An example is located at `utilities/_Dockerfile`, which can serve as a helpful starting point.
 
-Please follow the example structure as it is in the starter kit for the code structure.
-The different files and directories have following meaning:
+For detailed setup instructions regarding runtime dependencies, refer to the documentation in the `docs/runtime.md` file.
+
+## Code Structure Guidelines
+
+Your project should follow the structure outlined in the starter kit. Here’s a brief overview of what each component represents:
 
 ```
 .
@@ -39,89 +55,70 @@ The different files and directories have following meaning:
     └── _Dockerfile                 # Example Dockerfile for specifying runtime via Docker
 ```
 
-Finally, **you must specify your submission specific metadata JSON in `aicrowd.json`**
+Remember, **your submission metadata JSON (`aicrowd.json`)** is crucial for mapping your submission to the challenge. Ensure it contains the correct `challenge_id`, `authors`, and other necessary information. To utilize GPUs, set the `"gpu": true` flag in your `aicrowd.json`.
 
-The `aicrowd.json` of each submission should contain the following content:
+## Submitting to Different Tracks
 
-```json
-{
-    "challenge_id": "amazon-kdd-cup-24-understanding-shopping-concepts",
-    "authors": [
-      "aicrowd-bot"
-    ],
-    "gpu": false,
-    "description": "(optional) description about your awesome agent"
-}
-```
-**IMPORTANT: To use GPUs** - Set the GPU flag to `true`. 
+Specify the track by setting the appropriate `challenge_id` in your `aicrowd.json`. Here are the challenge IDs for various tracks:
 
-This JSON is used to map your submission to the challenge - so please remember to use the correct `challenge_id` as specified above. You can modify the `authors` and `description` keys. Please DO NOT add any additional keys to `aicrowd.json` unless otherwise communicated during the course of the challenge.
+| Track Name                        | Challenge ID                                        |
+|-----------------------------------|-----------------------------------------------------|
+| Understanding Shopping Concepts   | `amazon-kdd-cup-24-understanding-shopping-concepts` |
+| Shopping Knowledge Reasoning      | `amazon-kdd-cup-24-shopping-knowledge-reasoning`    |
+| User Behavior Alignment           | `amazon-kdd-cup-24-user-behavior-alignment`         |
+| Multi-Lingual Abilities           | `amazon-kdd-cup-24-multi-lingual-abilities`         |
+| All-Around                        | `amazon-kdd-cup-24-all-around`                      |
 
-## How do I submit to different tracks ?
+## Submission Entry Point
 
-You can submit to different tracks by specifying task specific the `challenge_id` in [aicrowd.json](aicrowd.json). Here are the challenge ids for the different tracks: 
+The evaluation process will instantiate a model from `models/user_config.py` for evaluation. Ensure this configuration is set correctly.
 
-Sure, let's create a markdown table based on the information provided:
-
-| Track Name                                | Challenge ID                          |
-|-------------------------------------------|-----------------------------------------|
-| Understanding Shopping Concepts           | amazon-kdd-cup-24-understanding-shopping-concepts |
-| Shopping Knowledge Reasoning              | amazon-kdd-cup-24-shopping-knowledge-reasoning    |
-| User Behavior Alignment                   | amazon-kdd-cup-24-user-behavior-alignment         |
-| Multi-Lingual Abilities                   | amazon-kdd-cup-24-multi-lingual-abilities         |
-| All-Around                                | amazon-kdd-cup-24-all-around                      |
-
-
-
-## Submission Entrypoint
-
-The evaluator will create an instance of a Model specified in from `models/user_config.py` to run the evaluation. 
-
-## Setting up SSH keys
+## Setting Up SSH Keys
 
 You will have to add your SSH Keys to your GitLab account by going to your profile settings [here](https://gitlab.aicrowd.com/profile/keys). If you do not have SSH Keys, you will first need to [generate one](https://docs.gitlab.com/ee/ssh/README.html#generating-a-new-ssh-key-pair).
 
 
-### IMPORTANT: Checking in your Models before submission!
+## Managing Large Model Files with Git LFS
 
-Before you submit make sure that you have saved your models, which are needed by your inference code.
-Lnowing your model weights will be significantly large files, you can use `git-lfs` to upload them. More details [here](https://discourse.aicrowd.com/t/how-to-upload-large-files-size-to-your-submission/2304). 
+When preparing your submission, it's crucial to ensure all necessary models and files required by your inference code are properly saved and included. Due to the potentially large size of model weight files, we highly recommend using Git Large File Storage (Git LFS) to manage these files efficiently.
 
-**Note**: If you check in your models directly into your git repo **without** using `git-lfs`, you may see errors like: 
+### Why Use Git LFS?
+
+Git LFS is designed to handle large files more effectively than Git's default handling of large files. This ensures smoother operations and avoids common errors associated with large files, such as:
+
 - `fatal: the remote end hung up unexpectedly`
 - `remote: fatal: pack exceeds maximum allowed size`
 
-Sometimes, the reason could also be a large file checked in directly into git, and even if not available in current working directory, but present in git history.
-If that happens, please ensure the model is also removed from git history, and then check in the model again using `git-lfs`. 
+These errors typically occur when large files are directly checked into the Git repository without Git LFS, leading to challenges in handling and transferring those files.
 
-## How to submit your code?
+### Steps to Use Git LFS
 
-You can create a submission by making a _tag push_ to your repository on [https://gitlab.aicrowd.com/](https://gitlab.aicrowd.com/).
-**Any tag push (where the tag name begins with "submission-") to your private repository is considered as a submission**
+1. **Install Git LFS**: If you haven't already, install Git LFS on your machine. Detailed instructions can be found [here](https://git-lfs.github.com/).
 
-```bash
-cd amazon-kdd-cup-2024-starter-kit
+2. **Track Large Files**: Use Git LFS to track the large files within your project. You can do this by running `git lfs track "*.model"` (replace `*.model` with your file type).
 
-# Add AIcrowd git remote endpoint
-git remote add aicrowd git@gitlab.aicrowd.com:<YOUR_AICROWD_USER_NAME>/amazon-kdd-cup-2024-starter-kit.git 
-git push aicrowd master
-```
+3. **Add and Commit**: After tracking the large files with Git LFS, add and commit them as you would with any other file. Git LFS will automatically handle these files differently to optimize their storage and transfer.
 
-```bash
+4. **Push to Repository**: When you push your changes to the repository, Git LFS will manage the large files, ensuring a smooth push process.
 
-# Commit All your changes
-git commit -am "My commit message"
+### Handling Previously Committed Large Files
 
-# Create a tag for your submission and push
-git tag -am "submission-v0.1" submission-v0.1
-git push aicrowd master
-git push aicrowd submission-v0.1
+If you have already committed large files directly to your Git repository without using Git LFS, you may encounter issues. These files, even if not present in the current working directory, could still be in the Git history, leading to errors.
 
-# Note : If the contents of your repository (latest commit hash) does not change,
-# then pushing a new tag will **not** trigger a new evaluation.
-```
+To resolve this, ensure that the large files are removed from the Git history and then re-add and commit them using Git LFS. This process cleans up the repository's history and avoids the aforementioned errors.
 
-You now should be able to see the details of your submission at:
-`https://gitlab.aicrowd.com/<YOUR_AICROWD_USER_NAME>/amazon-kdd-cup-2024-starter-kit/issues`
+For more information on how to upload large files to your submission and detailed guidance on using Git LFS, please refer to [this detailed guide](https://discourse.aicrowd.com/t/how-to-upload-large-files-size-to-your-submission/2304).
 
-**NOTE**: Please remember to update your username instead of `<YOUR_AICROWD_USER_NAME>` in the above link
+**Note**: Properly managing large files not only facilitates smoother operations for you but also ensures that the evaluation process can proceed without hindrances.
+
+## How to Submit Your Code
+
+To submit your code, push a tag beginning with "submission-" to your repository on [GitLab](https://gitlab.aicrowd.com/). Follow these steps to make a submission:
+
+1. Commit your changes with `git commit -am "Your commit message"`.
+2. Tag your submission (e.g., `git tag -am "submission-v0.1" submission-v0.1`).
+3. Push your changes and tags to the AIcrowd repository (replace `<YOUR_AICROWD_USER_NAME>` with your actual username).
+
+After pushing your tag, you can view your submission details at `https://gitlab.aicrowd.com/<YOUR_AICROWD_USER_NAME>/amazon-kdd-cup-2024-starter-kit/issues`.
+
+Ensure your `aicrowd.json` is correctly filled with the necessary metadata, and you've replaced `<YOUR_AICROWD_USER_NAME>` with your GitLab username in the provided URL.

@@ -80,6 +80,9 @@ As all tasks are converted into text generation tasks, rule-based parsers will p
 
 Since all these metrics range from [0, 1], we calculate the average metric for all tasks within each track (macro-averaged) to determine the overall score for a track and identify track winners. The overall score of Track 5 will be calculated by averaging scores in Tracks 1-4. 
 
+Please refer to [local_evaluation.py](local_evaluation.py) for more details on how we will evaluate your submissions.
+
+
 # 🗃️ Submission
 
 The challenge would be evaluated as a code competition. Participants must submit their code and essential resources, such as fine-tuned model weights and indices for Retrieval-Augmented Generation (RAG), which will be run on our servers to generate results and then for evaluation.
@@ -223,10 +226,6 @@ Sure, let's create a markdown table based on the information provided:
 Please follow the instructions in [docs/submission.md](ocs/submission.md) to make your first submission. 
 
 **Note**: **Remember to accept the Challenge Rules** on the challenge page, and task page before making your first submission.
-
-
-## Evaluation Metrics & Local Evaluation
-Please refer to [local_evaluation.py](local_evaluation.py) for more details on how we will evaluate your submissions.
 
 
 ## Hardware and System Configuration

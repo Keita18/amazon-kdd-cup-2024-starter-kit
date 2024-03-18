@@ -5,8 +5,7 @@ import evaluate
 
 from typing import List
 
-print("\nsacrebleu loading...")
-sacrebleu = evaluate.load("sacrebleu")
+sacrebleu = None
 
 
 def accuracy(prediction: int, truth: int):
@@ -107,6 +106,11 @@ def ndcg_eval(relevance_scores: List[float], truth: List[float]):
 
 
 def bleu(generation, truth, jp=False):
+    global sacrebleu
+    if sacrebleu is None:
+        print("\nsacrebleu loading...")
+        sacrebleu = evaluate.load("sacrebleu")
+
     generation = generation.lstrip("\n").rstrip("\n").split("\n")[0]
     candidate = [generation]
     reference = [[truth]]

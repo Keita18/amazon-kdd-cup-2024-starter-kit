@@ -131,6 +131,7 @@ def aggregate_scores(per_task_metrics):
         "task_name": [],
         "task_type": [],
         "metric": [],
+        "num_samples": [],
         "overall_score": [],
     }
     for task_name, values in per_task_metrics.items():
@@ -148,6 +149,7 @@ def aggregate_scores(per_task_metrics):
         overall_metrics["task_name"].append(task_name)
         overall_metrics["task_type"].append(task_type)
         overall_metrics["metric"].append(metric)
+        overall_metrics["num_samples"].append(len(sample_scores))
         overall_metrics["overall_score"].append(overall_score)
 
     return pd.DataFrame(overall_metrics)

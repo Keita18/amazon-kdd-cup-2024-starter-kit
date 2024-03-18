@@ -85,7 +85,8 @@ def evaluate_outputs(data_df, outputs, log_every_n_steps=1):
     for row_idx, row in tqdm(
         data_df.iterrows(), total=len(data_df), desc="Evaluating"
     ):
-        task_type, metric, ground_truth = (
+        task_name, task_type, metric, ground_truth = (
+            row['task_name']
             row["task_type"],
             row["metric"],
             row["output_field"],
@@ -94,7 +95,8 @@ def evaluate_outputs(data_df, outputs, log_every_n_steps=1):
         if metric not in eval_methods:
             raise NotImplementedError(f"No metric for {metric=}")
 
-        task_name = f"{task_type}---{metric}"
+        task_name = f"{task_name}"
+        # task_name = f"{task_type}---{metric}"
         # Note: In practice, here we are using the task_type-metric pair as a unique identifier, calling it as the task_name.
         # During the actual evaluations, the task names are more semantically defined, meaning, there could be multiple tasks
         # with the same task_type and metric.

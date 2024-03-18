@@ -4,8 +4,7 @@ from models.dummy_model import DummyModel
 
 # This line establishes an alias for the DummyModel class to be used within this script.
 # Instead of directly using DummyModel everywhere in the code, we're assigning it to 'UserModel'.
-# This approach allows for easier substitution of the model class when evaluating your models,
-# by simply changing the class that UserModel points to.
+# This approach allows for easier reference to your model class when evaluating your models,
 UserModel = DummyModel
 
 # When implementing your own model please follow this pattern:

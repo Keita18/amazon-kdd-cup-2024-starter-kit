@@ -132,7 +132,7 @@ You can add your SSH Keys to your GitLab account by going to your profile settin
 Please follow the instructions in [docs/submission.md](docs/submission.md) to make your first submission. 
 This also includes instructions on [specifying your software runtime](docs/submission.md#how-do-i-specify-my-software-runtime-dependencies), [code structure](docs/submission.md#what-should-my-code-structure-be-like), [submitting to different tracks](docs/submission.md#how-do-i-submit-to-different-tracks-).
 
-**Note**: **Remember to accept the Challenge Rules** on the challenge page, and task page before making your first submission.
+**Note**: **Remember to accept the Challenge Rules** on the challenge page, **and** the task page before making your first submission.
 
 ## What hardware does my code run on ?
 You can find more details about the hardware and system configuration in [docs/hardware-and-system-config.md](docs/hardware-and-system-config.md).

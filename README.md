@@ -122,7 +122,7 @@ You can add your SSH Keys to your GitLab account by going to your profile settin
 2.  **Clone the repository**
 
     ```bash
-    git@gitlab.aicrowd.com:aicrowd/challenges/amazon-kdd-cup-2024/amazon-kdd-cup-2024-starter-kit.git
+    git clone git@gitlab.aicrowd.com:aicrowd/challenges/amazon-kdd-cup-2024/amazon-kdd-cup-2024-starter-kit.git
     cd amazon-kdd-cup-2024-starter-kit
     ```
 

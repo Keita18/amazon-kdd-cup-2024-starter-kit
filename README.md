@@ -122,19 +122,26 @@ You can add your SSH Keys to your GitLab account by going to your profile settin
 
 5. Test your model locally using `python local_evaluation.py`.
 
-6. Make a submission as described in [How to make a submission](#how-to-make-a-submission) section.
+6. Accept the Challenge Rules on the main [challenge page](https://www.aicrowd.com/challenges/amazon-kdd-cup-2024-multi-task-online-shopping-challenge-for-llms) by clicking on the **Participate** button. Also accept the Challenge Rules on the Task specific page (link on the challenge page) that you want to submit to.
+
+7. Make a submission as described in [How to make a submission](#how-to-make-a-submission) section.
 
 
 ## How to make a submission?
 
 Please follow the instructions in [docs/submission.md](docs/submission.md) to make your first submission. 
-This also includes instructions on **specifying your software runtime**, **code structure**, **submitting to different tracks**.
+This also includes instructions on [specifying your software runtime](docs/submission.md#how-do-i-specify-my-software-runtime-dependencies), [code structure](docs/submission.md#what-should-my-code-structure-be-like), [submitting to different tracks](docs/submission.md#how-do-i-submit-to-different-tracks-).
 
 **Note**: **Remember to accept the Challenge Rules** on the challenge page, and task page before making your first submission.
 
 ## What hardware does my code run on ?
 You can find more details about the hardware and system configuration in [docs/hardware-and-system-config.md](docs/hardware-and-system-config.md).
 In summary, we provide you `2` x [[NVIDIA T4 GPUs](https://www.nvidia.com/en-us/data-center/tesla-t4/)] in Phase 1; and `4` x [[NVIDIA T4 GPUs](https://www.nvidia.com/en-us/data-center/tesla-t4/)] in Phase 2.
+
+
+## How are my model responses parsed by the evaluators ?
+Please refer to [parsers.py](parsers.py) for more details on how we parse your model responses.
+
 
 **Best of Luck** :tada: :tada:
 

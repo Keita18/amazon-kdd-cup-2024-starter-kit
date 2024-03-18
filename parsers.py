@@ -45,6 +45,10 @@ class ShoppingBenchTaskParsers:
             "named_entity_recognition": self._parse_named_entity_recognition,
         }
 
+        assert isinstance(
+            response, str
+        ), f"Response must be a string, but got {type(response)}"
+
         # Attempt to retrieve the appropriate parser method for the task type.
         parser_method = task_parser_methods.get(self.task_type)
 
@@ -253,5 +257,3 @@ if __name__ == "__main__":
     )  # failure case - not tolerant to [ if quotes not used
     # - extra '[' characters added to boundary elems]): ['[New York', 'ShopBench', 'Amazon]']
     # Expected output: ['[New York', 'ShopBench', 'Amazon]']
-
-    print(ner_parser.parse("[4, 1, 2, 3]"))

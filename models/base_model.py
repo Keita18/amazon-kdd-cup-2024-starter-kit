@@ -1,23 +1,6 @@
-from typing import List, Union
-import random
-import os
-
-from .base_model import ShopBenchBaseModel
-
-# Set a consistent seed for reproducibility
-AICROWD_RUN_SEED = int(os.getenv("AICROWD_RUN_SEED", 3142))
-
-
-class DummyModel(ShopBenchBaseModel):
-    """
-    A dummy model implementation for ShopBench, illustrating how to handle both
-    multiple choice and other types of tasks like Ranking, Retrieval, and Named Entity Recognition.
-    This model uses a consistent random seed for reproducible results.
-    """
-
+class ShopBenchBaseModel:
     def __init__(self):
-        """Initializes the model and sets the random seed for consistency."""
-        random.seed(AICROWD_RUN_SEED)
+        pass
 
     def predict(self, prompt: str, is_multiple_choice: bool) -> str:
         """
@@ -37,12 +20,4 @@ class DummyModel(ShopBenchBaseModel):
                         or a string representing a comma separated list of named entities for Named Entity Recognition tasks.
                         Please refer to parsers.py for more details on how these responses will be parsed by the evaluator.
         """
-        possible_responses = [1, 2, 3, 4]
-
-        if is_multiple_choice:
-            # Randomly select one of the possible responses for multiple choice tasks
-            return str(random.choice(possible_responses))
-        else:
-            # For other tasks, shuffle the possible responses and return as a string
-            random.shuffle(possible_responses)
-            return str(possible_responses)
+        raise NotImplementedError("predict method not implemented")

@@ -1,8 +1,8 @@
 {
-    "challenge_id": "user-behavior-alignment",
-    "authors": [
-      "aicrowd-bot"
-    ],
-    "gpu": true,
-    "description": "(optional) description about your awesome agent"
+  "challenge_id": "amazon-kdd-cup-24-understanding-shopping-concepts",
+  "authors": [
+    "your-aicrowd-username"
+  ],
+  "gpu": false,
+  "description": "(optional) description about your custom model"
 }

@@ -56,7 +56,7 @@ Remember, **your submission metadata JSON (`aicrowd.json`)** is crucial for mapp
 
 ## Submitting to Different Tracks
 
-Specify the track by setting the appropriate `challenge_id` in your `aicrowd.json`. Here are the challenge IDs for various tracks:
+Specify the track by setting the appropriate `challenge_id` in your [aicrowd.json](aicrowd.json). Here are the challenge IDs for various tracks:
 
 | Track Name                        | Challenge ID                                        |
 |-----------------------------------|-----------------------------------------------------|

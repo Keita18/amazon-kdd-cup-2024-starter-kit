@@ -162,7 +162,7 @@ Please refer to [parsers.py](parsers.py) for more details on how we parse your m
 
 # ❓ Frequently Asked Questions 
 ## Which track is this starter kit for ?
-This starter kit can be used to submit to any of the tracks. You can find more information in [docs/submissions.md#submitting-to-different-tracks](docs/submissions.md#submitting-to-different-tracks).
+This starter kit can be used to submit to any of the tracks. You can find more information in [docs/submission.md#submitting-to-different-tracks](docs/submissions.md#submitting-to-different-tracks).
 
 **Best of Luck** :tada: :tada:
 

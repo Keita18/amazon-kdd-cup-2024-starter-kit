@@ -82,32 +82,6 @@ Since all these metrics range from [0, 1], we calculate the average metric for a
 
 Please refer to [local_evaluation.py](local_evaluation.py) for more details on how we will evaluate your submissions.
 
-
-# 🗃️ Submission
-
-The challenge would be evaluated as a code competition. Participants must submit their code and essential resources, such as fine-tuned model weights and indices for Retrieval-Augmented Generation (RAG), which will be run on our servers to generate results and then for evaluation.
-
-## Hardware and System Configuration
-We apply a limit on the hardware available to each participant to run their solutions. Specifically, 
-
-- All solutions will be run on [AWS g4dn.12xlarge](https://aws.amazon.com/ec2/instance-types/g4/) instances equipped with [NVIDIA T4 GPUs](https://www.nvidia.com/en-us/data-center/tesla-t4/). 
-- Solutions for Phase 1 will have access to `2` x [NVIDIA T4 GPU](https://www.nvidia.com/en-us/data-center/tesla-t4/s). 
-- Solutions for Phase 2 will have access to `4` x [NVIDIA T4 GPU](https://www.nvidia.com/en-us/data-center/tesla-t4/s). 
-Please note that NVIDIA T4 uses somewhat outdated architectures and is thus not compatible with certain acceleration toolkits (e.g. Flash Attention), so please be careful about compatibility.
-
-Besides, the following restrictions will also be imposed. 
-
-- Network connection will be disabled (except for HuggingFace to download open-source checkpoints). 
-- Each submission will be assigned a certain amount of time to run. Submissions that exceed the time limits will be killed and will not be evaluated. The tentative time limit is set as follows **[TO BE TESTED WITH AICROWD SUBMISSION SYSTEM]**. 
-
-| Phase  | Track 1 | Track 2 | Track 3 | Track 4 | Track 5 |
-| ------ | ------- | ------- | ------- | ------- | ------- |
-| **Phase 1**| 140 minutes | 40 minutes | 60 minutes | 60 minutes | 5 hours |
-
-- Each team will be able to make up to **4 submissions per week**, with a maximum of **2 Track 5 all-around submissions** **[TO BE TESTED WITH AICROWD SUBMISSION SYSTEM]**. 
-
-Based on the hardware and system configuration, we recommend participants to begin with 7B models. According to our experiments, 7B models like Vicuna-7B and Mistral can perform inference smoothly on 2 NVIDIA T4 GPUs, while 13B models will result in OOM. 
-
 #  Getting Started
 1. **Sign up** to join the competition [on the AIcrowd website](https://www.aicrowd.com/challenges/amazon-kdd-cup-2024-multi-task-online-shopping-challenge-for-llms).
 2. **Fork** this starter kit repository. You can use [this link](https://gitlab.aicrowd.com/aicrowd/challenges/amazon-kdd-cup-2024/amazon-kdd-cup-2024-starter-kit/-/forks/new) to create a fork.
@@ -150,105 +124,17 @@ You can add your SSH Keys to your GitLab account by going to your profile settin
 
 6. Make a submission as described in [How to make a submission](#how-to-make-a-submission) section.
 
-## How do I specify my software runtime / dependencies?
-
-We accept submissions with custom runtime, so you don't need to worry about which libraries or framework to pick from.
-
-The configuration files typically include `requirements.txt` (pypi packages), `apt.txt` (apt packages) or even your own `Dockerfile`.
-
-An example Dockerfile is provided in [utilities/_Dockerfile](utilities/_Dockerfile) which you can use as a starting point.
-
-You can check detailed information about setting up runtime dependencies in the 👉 [docs/runtime.md](docs/runtime.md) file.
-
-## What should my code structure be like?
-
-Please follow the example structure as it is in the starter kit for the code structure.
-The different files and directories have following meaning:
-
-```
-.
-├── README.md                       # Project documentation and setup instructions
-├── aicrowd.json                    # Submission meta information - like your username, track name
-├── data
-│   └── development.json            # Development dataset local testing
-├── docs
-│   └── runtime.md                  # Documentation on the runtime environment setup, dependency confifgs
-├── local_evaluation.py             # Use this to check your model evaluation flow locally
-├── metrics.py                      # Scripts to calculate evaluation metrics for your model's performance
-├── models
-│   ├── README.md                   # Documentation specific to the implementation of model interfaces
-│   ├── base_model.py               # Base model class 
-│   ├── dummy_model.py              # A simple or placeholder model for demonstration or testing
-│   └── user_config.py              # IMPORTANT: Configuration file to specify your model 
-├── parsers.py                      # Model output parser
-├── requirements.txt                # Python packages to be installed for model development
-├── requirements_eval.txt           # Additional Python packages to be installed for local evaluation
-└── utilities
-    └── _Dockerfile                 # Example Dockerfile for specifying runtime via Docker
-```
-
-Finally, **you must specify your submission specific metadata JSON in `aicrowd.json`**
-
-The `aicrowd.json` of each submission should contain the following content:
-
-```json
-{
-    "challenge_id": "amazon-kdd-cup-24-understanding-shopping-concepts",
-    "authors": [
-      "aicrowd-bot"
-    ],
-    "gpu": false,
-    "description": "(optional) description about your awesome agent"
-}
-```
-**IMPORTANT: To use GPUs** - Set the GPU flag to `true`. 
-
-This JSON is used to map your submission to the challenge - so please remember to use the correct `challenge_id` as specified above. You can modify the `authors` and `description` keys. Please DO NOT add any additional keys to `aicrowd.json` unless otherwise communicated during the course of the challenge.
-
-## How do I submit to different tracks ?
-
-You can submit to different tracks by specifying task specific the `challenge_id` in [aicrowd.json](aicrowd.json). Here are the challenge ids for the different tracks: 
-
-Sure, let's create a markdown table based on the information provided:
-
-| Track Name                                | Challenge ID                          |
-|-------------------------------------------|-----------------------------------------|
-| Understanding Shopping Concepts           | amazon-kdd-cup-24-understanding-shopping-concepts |
-| Shopping Knowledge Reasoning              | amazon-kdd-cup-24-shopping-knowledge-reasoning    |
-| User Behavior Alignment                   | amazon-kdd-cup-24-user-behavior-alignment         |
-| Multi-Lingual Abilities                   | amazon-kdd-cup-24-multi-lingual-abilities         |
-| All-Around                                | amazon-kdd-cup-24-all-around                      |
-
-
 
 ## How to make a submission?
 
 Please follow the instructions in [docs/submission.md](ocs/submission.md) to make your first submission. 
+This also includes instructions on **specifying your software runtime**, **code structure**, **submitting to different tracks**.
 
 **Note**: **Remember to accept the Challenge Rules** on the challenge page, and task page before making your first submission.
 
-
-## Hardware and System Configuration
-We apply a limit on the hardware available to each participant to run their solutions. Specifically, 
-
-- All solutions will be run on [AWS g4dn.12xlarge](https://aws.amazon.com/ec2/instance-types/g4/) instances equipped with [NVIDIA T4 GPUs](https://www.nvidia.com/en-us/data-center/tesla-t4/). 
-- Solutions for Phase 1 will have access to `2` x [NVIDIA T4 GPU](https://www.nvidia.com/en-us/data-center/tesla-t4/s). 
-- Solutions for Phase 2 will have access to `4` x [NVIDIA T4 GPU](https://www.nvidia.com/en-us/data-center/tesla-t4/s). 
-Please note that NVIDIA T4 uses somewhat outdated architectures and is thus not compatible with certain acceleration toolkits (e.g. Flash Attention), so please be careful about compatibility.
-
-Besides, the following restrictions will also be imposed. 
-
-- Network connection will be disabled (except for HuggingFace to download open-source checkpoints). 
-- Each submission will be assigned a certain amount of time to run. Submissions that exceed the time limits will be killed and will not be evaluated. The tentative time limit is set as follows **[TO BE TESTED WITH AICROWD SUBMISSION SYSTEM]**. 
-
-| Phase  | Track 1 | Track 2 | Track 3 | Track 4 | Track 5 |
-| ------ | ------- | ------- | ------- | ------- | ------- |
-| **Phase 1**| 140 minutes | 40 minutes | 60 minutes | 60 minutes | 5 hours |
-
-- Each team will be able to make up to **4 submissions per week**, with a maximum of **2 Track 5 all-around submissions** **[TO BE TESTED WITH AICROWD SUBMISSION SYSTEM]**. 
-
-Based on the hardware and system configuration, we recommend participants to begin with 7B models. According to our experiments, 7B models like Vicuna-7B and Mistral can perform inference smoothly on 2 NVIDIA T4 GPUs, while 13B models will result in OOM. 
-
+## What hardware does my code run on ?
+You can find more details about the hardware and system configuration in [docs/hardware-and-system-config.md](docs/hardware-and-system-config.md).
+In summary, we provide you `2` x [[NVIDIA T4 GPUs](https://www.nvidia.com/en-us/data-center/tesla-t4/)] in Phase 1; and `4` x [[NVIDIA T4 GPUs](https://www.nvidia.com/en-us/data-center/tesla-t4/)] in Phase 2.
 
 **Best of Luck** :tada: :tada:
 

@@ -18,6 +18,7 @@ class ShopBenchBaseModel:
             str: The prediction as a string representing a single integer[0, 3] for multiple choice tasks,
                         or a string representing a comma separated list of integers for Ranking, Retrieval tasks,
                         or a string representing a comma separated list of named entities for Named Entity Recognition tasks.
+                        or a string representing the (unconstrained) generated response for the generation tasks
                         Please refer to parsers.py for more details on how these responses will be parsed by the evaluator.
         """
         raise NotImplementedError("predict method not implemented")

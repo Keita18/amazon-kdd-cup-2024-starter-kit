@@ -21,6 +21,7 @@ The output from your model's `predict` function should always be a string. Depen
 - A single integer (in the range [0, 3]) for multiple choice tasks.
 - A comma-separated list of integers for ranking tasks.
 - A comma-separated list of named entities for Named Entity Recognition (NER) tasks.
+- (unconstrained) generated response for the generation tasks
 
 For more information on how these responses are processed, please see [parsers.py](../parsers.py).
 

@@ -35,6 +35,7 @@ class DummyModel(ShopBenchBaseModel):
             str: The prediction as a string representing a single integer[0, 3] for multiple choice tasks,
                         or a string representing a comma separated list of integers for Ranking, Retrieval tasks,
                         or a string representing a comma separated list of named entities for Named Entity Recognition tasks.
+                        or a string representing the (unconstrained) generated response for the generation tasks
                         Please refer to parsers.py for more details on how these responses will be parsed by the evaluator.
         """
         possible_responses = [1, 2, 3, 4]
@@ -46,3 +47,5 @@ class DummyModel(ShopBenchBaseModel):
             # For other tasks, shuffle the possible responses and return as a string
             random.shuffle(possible_responses)
             return str(possible_responses)
+            # Note: As this is dummy model, we are returning random responses for non-multiple choice tasks.
+            # For generation tasks, this should ideally return an unconstrained string.

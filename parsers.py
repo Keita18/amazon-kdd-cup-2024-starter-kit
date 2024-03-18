@@ -1,5 +1,7 @@
 import ast
 
+VERSION = "0.1.0"
+
 MAX_RESPONSE_CHARACTERS = 5000
 
 

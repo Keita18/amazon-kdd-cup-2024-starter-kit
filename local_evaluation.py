@@ -8,6 +8,8 @@ from sentence_transformers import SentenceTransformer
 import metrics
 import parsers
 
+VERSION = "0.1.0"
+
 
 def print_sample(idx, generation, truth, metric, score):
     """

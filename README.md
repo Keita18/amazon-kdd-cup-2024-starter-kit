@@ -24,6 +24,7 @@ This repository is the Amazon KDD Cup 2024 **Submission template and Starter kit
       - [How to make a submission?](#how-to-make-a-submission)
       - [What hardware does my code run on?](#what-hardware-does-my-code-run-on)
       - [How are my model responses parsed by the evaluators?](#how-are-my-model-responses-parsed-by-the-evaluators)
+6. [Frequently Asked Questions](#frequently-asked-questions)
 6. [Important Links](#important-links)
 
 
@@ -158,6 +159,10 @@ In summary, we provide you `2` x [[NVIDIA T4 GPUs](https://www.nvidia.com/en-us/
 ## 🧩 How are my model responses parsed by the evaluators ?
 Please refer to [parsers.py](parsers.py) for more details on how we parse your model responses.
 
+
+# Frequently Asked Questions 
+## Which track is this starter kit for ?
+This starter kit can be used to submit to any of the tracks. You can find more information in [docs/submissions.md#submitting-to-different-tracks](docs/submissions.md#submitting-to-different-tracks).
 
 **Best of Luck** :tada: :tada:
 

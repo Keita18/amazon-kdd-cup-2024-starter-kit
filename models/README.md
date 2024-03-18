@@ -24,8 +24,8 @@ The output from your model's `predict` function should always be a string. Depen
 
 For more information on how these responses are processed, please see [parsers.py](../parsers.py).
 
-### Task Type
-Note that the type of task will not be explicitly provided to your model. However, you can infer the task type from the prompt provided.
+
+**Note** that the `task_type` will not be explicitly provided to your model. However, the information about the `task_type` is implicitly available in the prompt provided.
 
 ## Internet Access
 Your model will not have access to the internet during evaluation. As such, you'll need to include any necessary model weights directly in your repository before submission. Ensure that your Model class is self-contained and fully operational without internet access.

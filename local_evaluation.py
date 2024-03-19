@@ -57,9 +57,8 @@ def generate_model_outputs(data_df, model):
         data_df.iterrows(), total=len(data_df), desc="Generating Responses"
     ):
         is_multiple_choice = row["task_type"] == "multiple-choice"
-        # the 'task_type' column won't be available during evaluation
-        # please consistently use just the `is_multiple_choice` parameter
-        # passed to the `.predict`method.`
+        # the 'task_type' column won't be available during evaluation, so you should use something like
+        # ```is_multiple_choice = row['is_multiple_choice']``
         prompt = row["input_field"]
         model_output = model.predict(prompt, is_multiple_choice)
         outputs.append(model_output)

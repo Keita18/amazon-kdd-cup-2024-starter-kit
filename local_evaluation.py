@@ -108,9 +108,9 @@ def evaluate_outputs(data_df, outputs, log_every_n_steps=1):
 
         per_task_metrics[task_name]["sample_score"].append(metric_score)
 
-        if row_idx % log_every_n_steps == 0:
+        if (row_idx + 1) % log_every_n_steps == 0:
             print_sample(
-                row_idx, model_output, ground_truth, metric, metric_score
+                row_idx + 1, model_output, ground_truth, metric, metric_score
             )
 
     return per_task_metrics

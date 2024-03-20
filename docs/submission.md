@@ -114,7 +114,7 @@ To submit your code, push a tag beginning with "submission-" to your repository 
 
 1. Commit your changes with `git commit -am "Your commit message"`.
 2. Tag your submission (e.g., `git tag -am "submission-v0.1" submission-v0.1`).
-3. Push your changes and tags to the AIcrowd repository (replace `<YOUR_AICROWD_USER_NAME>` with your actual username).
+3. Push your changes and tags to the AIcrowd repository (e.g. `git push origin submission-v0.1`)
 
 After pushing your tag, you can view your submission details at `https://gitlab.aicrowd.com/<YOUR_AICROWD_USER_NAME>/amazon-kdd-cup-2024-starter-kit/issues`.
 

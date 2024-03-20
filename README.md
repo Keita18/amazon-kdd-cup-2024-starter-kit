@@ -120,14 +120,14 @@ You can add your SSH Keys to your GitLab account by going to your profile settin
 
 2. **Fork the repository**. You can use [this link](https://gitlab.aicrowd.com/aicrowd/challenges/amazon-kdd-cup-2024/amazon-kdd-cup-2024-starter-kit/-/forks/new) to create a fork.
 
-2.  **Clone the repository**
+3.  **Clone the repository**
 
     ```bash
-    git clone git@gitlab.aicrowd.com:aicrowd/challenges/amazon-kdd-cup-2024/amazon-kdd-cup-2024-starter-kit.git
+    git clone git@gitlab.aicrowd.com:aicrowd/<YOUR-AICROWD-USERNAME>/amazon-kdd-cup-2024-starter-kit.git
     cd amazon-kdd-cup-2024-starter-kit
     ```
 
-3. **Install** competition specific dependencies!
+4. **Install** competition specific dependencies!
     ```bash
     cd amazon-kdd-cup-2024-starter-kit
     pip install -r requirements.txt
@@ -135,13 +135,13 @@ You can add your SSH Keys to your GitLab account by going to your profile settin
     pip install -r requirements_eval.txt
     ```
 
-4. Write your own model as described in [How to write your own model](#how-to-write-your-own-model) section.
+5. Write your own model as described in [How to write your own model](#how-to-write-your-own-model) section.
 
-5. Test your model locally using `python local_evaluation.py`.
+6. Test your model locally using `python local_evaluation.py`.
 
-6. Accept the Challenge Rules on the main [challenge page](https://www.aicrowd.com/challenges/amazon-kdd-cup-2024-multi-task-online-shopping-challenge-for-llms) by clicking on the **Participate** button. Also accept the Challenge Rules on the Task specific page (link on the challenge page) that you want to submit to.
+7. Accept the Challenge Rules on the main [challenge page](https://www.aicrowd.com/challenges/amazon-kdd-cup-2024-multi-task-online-shopping-challenge-for-llms) by clicking on the **Participate** button. Also accept the Challenge Rules on the Task specific page (link on the challenge page) that you want to submit to.
 
-7. Make a submission as described in [How to make a submission](#-how-to-make-a-submission) section.
+8. Make a submission as described in [How to make a submission](#-how-to-make-a-submission) section.
 
 
 ## 📮 How to make a submission?

@@ -112,6 +112,8 @@ For more information on how to upload large files to your submission and detaile
 
 To submit your code, push a tag beginning with "submission-" to your repository on [GitLab](https://gitlab.aicrowd.com/). Follow these steps to make a submission:
 
+Assuming, you have cloned the repo already by following the instructions [here](../README.md#setup) and made your changes.
+
 1. Commit your changes with `git commit -am "Your commit message"`.
 2. Tag your submission (e.g., `git tag -am "submission-v0.1" submission-v0.1`).
 3. Push your changes and tags to the AIcrowd repository (e.g. `git push origin submission-v0.1`)

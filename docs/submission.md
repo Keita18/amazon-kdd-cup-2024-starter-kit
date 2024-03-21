@@ -52,7 +52,7 @@ Your project should follow the structure outlined in the starter kit. Here’s a
     └── _Dockerfile                 # Example Dockerfile for specifying runtime via Docker
 ```
 
-Remember, **your submission metadata JSON (`aicrowd.json`)** is crucial for mapping your submission to the challenge. Ensure it contains the correct `challenge_id`, `authors`, and other necessary information. To utilize GPUs, set the `"gpu": true` flag in your `aicrowd.json`.
+Remember, **your submission metadata JSON (`aicrowd.json`)** is crucial for mapping your submission to the challenge. Ensure it contains the correct `challenge_id`, `authors`, and other necessary information. **To utilize GPUs, set the `"gpu": true` flag in your `aicrowd.json`.**
 
 ## Submitting to Different Tracks
 

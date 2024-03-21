@@ -26,7 +26,14 @@ echo "Total build time: $BUILD_TIME seconds"
 # 'python /submission/local_evaluation.py' is the command executed inside the container.
 # the -w sets the workind directory to /submission.
 # It then local_evaluation.py using software runtime set up in the Dockerfile.
-docker run -v "$(pwd)":/submission -w /submission $IMAGE_NAME python local_evaluation.py
+docker run \
+    --gpus all \
+    -v "$(pwd)":/submission \
+    -w /submission \
+    $IMAGE_NAME python local_evaluation.py
+
+# Note: We assume you have nvidia-container-toolkit installed and configured 
+# to use the --gpus all flag. If you are not using GPUs, you can remove this flag.
 
 
 # Note 1: Please refer to the Dockerfile to understand how the software runtime is set up.

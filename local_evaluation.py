@@ -1,12 +1,11 @@
-import pandas as pd
-from tqdm import tqdm
-import torch
-import numpy as np
 import os
 
-
 import metrics
+import numpy as np
+import pandas as pd
 import parsers
+import torch
+from tqdm import tqdm
 
 VERSION = "0.1.0"
 
@@ -168,22 +167,22 @@ def get_evaluation_methods():
         "hit rate@3": metrics.calculate_hit_rate_3,
         "rougel": metrics.calculate_rougel,
         "sent-transformer": lambda generated_text, reference_texts: metrics.calculate_cosine_similarity(
-            generated_text=generated_text, 
-            reference_texts=reference_texts, 
-            model_name="all-MiniLM-L6-v2"
+            generated_text=generated_text,
+            reference_texts=reference_texts,
+            model_name="all-MiniLM-L6-v2",
         ),
         "multilingual-sent-transformer": lambda generated_text, reference_texts: metrics.calculate_cosine_similarity(
-            generated_text=generated_text, 
-            reference_texts=reference_texts, 
-            model_name="paraphrase-multilingual-MiniLM-L12-v2"
+            generated_text=generated_text,
+            reference_texts=reference_texts,
+            model_name="paraphrase-multilingual-MiniLM-L12-v2",
         ),
-        "micro f1": metrics.calculate_true_positive_false_positives_false_negatives, 
+        "micro f1": metrics.calculate_true_positive_false_positives_false_negatives,
         "ndcg": metrics.calculate_ndcg,
         "bleu": metrics.calculate_bleu_score,
         "jp-bleu": lambda generated_text, reference_text: metrics.calculate_bleu_score(
-            generated_text=generated_text, 
-            reference_text=reference_text, 
-            is_japanese=True
+            generated_text=generated_text,
+            reference_text=reference_text,
+            is_japanese=True,
         ),
     }
 

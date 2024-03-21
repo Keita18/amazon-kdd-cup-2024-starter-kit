@@ -7,7 +7,7 @@
 # with the current directory mounted at /submission inside the container.
 
 # Step 1: Define the name of the Docker image.
-LAST_COMMIT_HASH=$(git rev-parse HEAD)
+LAST_COMMIT_HASH=$(git rev-parse --short HEAD)
 IMAGE_NAME="aicrowd/amazon-kddcup24-submission:${LAST_COMMIT_HASH}"
 
 # Step 2: Build the Docker image.

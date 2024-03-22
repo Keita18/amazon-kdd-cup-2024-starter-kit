@@ -45,7 +45,7 @@ Your project should follow the structure outlined in the starter kit. Here’s a
 ├── models
 │   ├── README.md                   # Documentation specific to the implementation of model interfaces
 │   ├── base_model.py               # Base model class 
-│   ├── dummy_model.py              # A simple or placeholder model for demonstration or testing
+│   ├── dummy_model.py              # A simple or placeholder model for demonstration or testing. We also implement a simple Vicuna-7B baseline here. 
 │   └── user_config.py              # IMPORTANT: Configuration file to specify your model 
 ├── parsers.py                      # Model output parser
 ├── requirements.txt                # Python packages to be installed for model development

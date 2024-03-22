@@ -32,6 +32,7 @@ Your project should follow the structure outlined in the starter kit. Here’s a
 
 ```
 .
+├── .dockerignore                   # Please specify the paths to your model checkpoints so that the large files won't be built into the docker image. 
 ├── README.md                       # Project documentation and setup instructions
 ├── aicrowd.json                    # Submission meta information - like your username, track name
 ├── data

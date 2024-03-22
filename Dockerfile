@@ -24,7 +24,7 @@ RUN groupadd -g 1001 aicrowd && \
 USER ${USER_NAME}
 WORKDIR ${HOME_DIR}
 
-# Install Miniconda and Python packages
+# Install Miniconda and Python packages. You can change the python version by using another Miniconda. 
 RUN wget -nv -O miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-py38_22.11.1-1-Linux-x86_64.sh \
     && bash miniconda.sh -b -p ${CONDA_DIR} \
     && . ${CONDA_DIR}/etc/profile.d/conda.sh \

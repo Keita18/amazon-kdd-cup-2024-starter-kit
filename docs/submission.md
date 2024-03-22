@@ -22,7 +22,7 @@ Our platform supports custom runtime environments. This means you have the flexi
 
 - **`requirements.txt`**: List any PyPI packages your project needs. **Do specify versions, as we observe significant difference in inference time between different `transformer` versions.**
 - **`apt.txt`**: Include any apt packages required.
-- **`Dockerfile`**: Optionally, you can provide your own Dockerfile. An example is located at `utilities/_Dockerfile`, which can serve as a helpful starting point. **the 
+- **`Dockerfile`**: The one located at the root will be used by default to build your submission. 
 
 For detailed setup instructions regarding runtime dependencies, refer to the documentation in the `docs/runtime.md` file.
 

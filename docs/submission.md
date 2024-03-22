@@ -120,6 +120,6 @@ Assuming, you have cloned the repo already by following the instructions [here](
 2. Tag your submission (e.g., `git tag -am "submission-v0.1" submission-v0.1`).
 3. Push your changes and tags to the AIcrowd repository (e.g. `git push origin submission-v0.1`)
 
-After pushing your tag, you can view your submission details at `https://gitlab.aicrowd.com/<YOUR-AICROWD-USER-NAME>/amazon-kdd-cup-2024-starter-kit/issues`.
+After pushing your tag, you can view your submission details at `https://gitlab.aicrowd.com/<YOUR-AICROWD-USER-NAME>/amazon-kdd-cup-2024-starter-kit/issues`. It may take about **30 minutes** for each submission to build and begin evaluation, so please be patient. 
 
 Ensure your `aicrowd.json` is correctly filled with the necessary metadata, and you've replaced `<YOUR-AICROWD-USER-NAME>` with your GitLab username in the provided URL.

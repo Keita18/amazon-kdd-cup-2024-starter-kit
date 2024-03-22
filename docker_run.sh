@@ -15,6 +15,11 @@ IMAGE_NAME="aicrowd/amazon-kddcup24-submission:${LAST_COMMIT_HASH}"
 # This means Docker will look for a Dockerfile in the current directory to build the image.
 START_TIME=$(date +%s)
 DOCKER_BUILDKIT=1 docker build -t $IMAGE_NAME .
+BUILD_STATUS=$?
+if [ $BUILD_STATUS -ne 0 ]; then
+    echo "Docker build failed. Exiting..."
+    exit $BUILD_STATUS
+fi
 END_TIME=$(date +%s)
 BUILD_TIME=$((END_TIME - START_TIME))
 echo "Total build time: $BUILD_TIME seconds"

@@ -20,9 +20,9 @@ This document is designed to assist you in making your initial submission smooth
 
 Our platform supports custom runtime environments. This means you have the flexibility to choose any libraries or frameworks necessary for your project. Here’s how you can specify your runtime and dependencies:
 
-- **`requirements.txt`**: List any PyPI packages your project needs.
+- **`requirements.txt`**: List any PyPI packages your project needs. **Do specify versions, as we observe significant difference in inference time between different `transformer` versions.**
 - **`apt.txt`**: Include any apt packages required.
-- **`Dockerfile`**: Optionally, you can provide your own Dockerfile. An example is located at `utilities/_Dockerfile`, which can serve as a helpful starting point.
+- **`Dockerfile`**: Optionally, you can provide your own Dockerfile. An example is located at `utilities/_Dockerfile`, which can serve as a helpful starting point. **the 
 
 For detailed setup instructions regarding runtime dependencies, refer to the documentation in the `docs/runtime.md` file.
 
@@ -37,7 +37,9 @@ Your project should follow the structure outlined in the starter kit. Here’s a
 ├── data
 │   └── development.json            # Development dataset local testing
 ├── docs
-│   └── runtime.md                  # Documentation on the runtime environment setup, dependency confifgs
+│   └── runtime.md                  # Documentation on the runtime environment setup, dependency configs
+├── Dockerfile                      # The Dockerfile that will be used to build your submission and all dependencies. The default one will work fine, but you can write your own. 
+├── docker_run.sh                   # This script builds your submission locally and calls `local_evaluation.py`. It can be used to debug (if your submission fails to build). 
 ├── local_evaluation.py             # Use this to check your model evaluation flow locally
 ├── metrics.py                      # Scripts to calculate evaluation metrics for your model's performance
 ├── models

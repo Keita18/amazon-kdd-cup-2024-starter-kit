@@ -80,8 +80,11 @@ class ShoppingBenchTaskParsers:
             An integer representing the selected option. Returns -1 if the parsing fails due to
             an invalid response format.
         """
+        response = response.strip()
+        if response == '':
+            return -1
         try:
-            return int(response.strip()[0])
+            return int(response[0])
         except ValueError:
             return -1
 
@@ -108,7 +111,10 @@ class ShoppingBenchTaskParsers:
         for item in cleaned_response.split(","):
             try:
                 # Attempt to convert each item to an integer and add it to the list.
-                ranked_items.append(int(item))
+                int_item = int(item)
+                if int_item > 5:
+                    continue
+                ranked_items.append(int_item)
             except ValueError:
                 pass  # Skip non-numeric items.
 
@@ -191,12 +197,13 @@ class ShoppingBenchTaskParsers:
                 )
         except (SyntaxError, ValueError):
             # Fallback: split the string by commas and strip whitespace.
-            return [entity.strip() for entity in response.split(",")]
+            # we remove empty entities. it will not cause bug, just an implementation choice. 
+            return [entity.strip() for entity in response.split(",") if entity.strip() != '']
 
 
 if __name__ == "__main__":
     # Example usage of the ShoppingBenchTaskParsers class for various task types.
-
+    
     # MULTICHOICE EXAMPLE
     multic_choice_parser = ShoppingBenchTaskParsers("multichoice")
     print("Multichoice Example:")
@@ -204,8 +211,15 @@ if __name__ == "__main__":
     print(
         multic_choice_parser.parse("a")
     )  # Expected output (failure case): -1
+    print(multic_choice_parser.parse('\n')) # Should be -1
+    print(multic_choice_parser.parse(' ')) # Should also be -1
+    print(multic_choice_parser.parse(' 2')) # Should be 2
+    print(multic_choice_parser.parse('\n1')) # Should be 1
+    print(multic_choice_parser.parse('\n 3')) # Should be 3
+    print(multic_choice_parser.parse('\n ')) # Should be -1
     print()
-
+    # MULTI CHOICE EXAMPLE TEST COMPLETE
+    
     # RANKING EXAMPLE
     ranking_parser = ShoppingBenchTaskParsers("ranking")
     print("Ranking Example:")
@@ -221,17 +235,28 @@ if __name__ == "__main__":
     print(
         ranking_parser.parse("1, 4, 5, aicrowd, 6")
     )  # Expected output: [1, 4, 5, 6] # remove alphanumeric chars
+    print(
+        ranking_parser.parse('\n')) # Should be empty list
+    print(ranking_parser.parse(' \n'))
+    print(ranking_parser.parse('The answer is: 1, 2, 3, 4, 5')) # Should be 1, 2, 3, 4, 5
+    print(ranking_parser.parse(',1,2,3,4,5')) # Should be 1, 2, 3, 4, 5
+    print(ranking_parser.parse('1 2'))# Should be empty list
 
     print()
-
+    # RANKING TEST COMPLETE
+    
     # GENERATION EXAMPLE
     generation_parser = ShoppingBenchTaskParsers("generation")
     print("Generation Example:")
     print(
         generation_parser.parse("This is a generated response")
     )  # Expected output: 'This is a generated response.'
+    print(generation_parser.parse("\nThe answer is \n\n good.\n\n\n\n\n\n\n")) # Expected: The answer is \n\n good. 
+    print(generation_parser.parse('\n \n')) # Should be nothing. 
     print()
 
+    # GENERATION TEST COMPLETE
+    
     # RETRIEVAL EXAMPLE
     retrieval_parser = ShoppingBenchTaskParsers("retrieval")
     print("Retrieval Example:")
@@ -244,12 +269,16 @@ if __name__ == "__main__":
     print(
         retrieval_parser.parse("100, 200, jjhg")
     )  # Expected output (removed alphhanumeric chars): [100, 200]
+    print(retrieval_parser.parse('100,           200, \n\n\n 300')) # Expected: [100, 200, 300]
     print(
         retrieval_parser.parse("100, 200, 300, 400")
     )  # Expected output (only consider first 3 elems): [100, 200, 300]
-
+    print(retrieval_parser.parse('\n 100, 200, 300')) # Should be 100, 200, 300
+    print(retrieval_parser.parse('\n \n \n')) # Should be empty list
     print()
-
+    print()
+    # RETRIEVAL TEST COMPLETE
+    
     # NAMED ENTITY RECOGNITION EXAMPLE
     ner_parser = ShoppingBenchTaskParsers("named_entity_recognition")
     print("Named Entity Recognition Example:")
@@ -264,3 +293,7 @@ if __name__ == "__main__":
     )  # failure case - not tolerant to [ if quotes not used
     # - extra '[' characters added to boundary elems]): ['[New York', 'ShopBench', 'Amazon]']
     # Expected output: ['[New York', 'ShopBench', 'Amazon]']
+    print(ner_parser.parse('\n, New York, ShopBench')) # Should be ['New York', 'ShopBench']
+    print(ner_parser.parse(' ')) # Should be []
+    print(ner_parser.parse('\n \n')) # Should be []
+    

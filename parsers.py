@@ -205,7 +205,7 @@ class ShoppingBenchTaskParsers:
                 raise SyntaxError(
                     "Unexpected Syntax error - fall back to comma separated list."
                 )
-        except SyntaxError as e:
+        except Exception as e:
             # Fallback: split the string by commas and strip whitespace.
             # we remove empty entities. it will not cause bug, just an implementation choice.
             return [

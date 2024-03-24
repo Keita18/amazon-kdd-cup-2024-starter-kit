@@ -88,7 +88,7 @@ class ShoppingBenchTaskParsers:
             return int(response[0])
         except Exception as e:
             logger.warning(
-                f"Error parsing multichoice response: {e}. Responding with default : {default_response}"
+                f"SHOPBENCH_PARSER_WARNING::: Error parsing multichoice response: {e}. Responding with default : {default_response}"
             )
             return default_response
 
@@ -177,7 +177,7 @@ class ShoppingBenchTaskParsers:
             return retrieved_items
         except Exception as e:
             logger.warning(
-                f"Error parsing retrieval response: {e}. Responding with default : {default_response}"
+                f"SHOPBENCH_PARSER_WARNING::: Error parsing retrieval response: {e}. Responding with default : {default_response}"
             )
             return default_response
 

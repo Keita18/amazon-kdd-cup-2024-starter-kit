@@ -4,3 +4,4 @@ sentencepiece
 protobuf
 pandas
 accelerate
+loguru

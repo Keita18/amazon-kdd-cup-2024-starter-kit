@@ -1,6 +1,8 @@
 import ast
 
-VERSION = "0.1.0"
+from loguru import logger
+
+VERSION = "0.1.1"
 
 MAX_RESPONSE_CHARACTERS = 5000
 
@@ -80,13 +82,15 @@ class ShoppingBenchTaskParsers:
             An integer representing the selected option. Returns -1 if the parsing fails due to
             an invalid response format.
         """
-        response = response.strip()
-        if response == '':
-            return -1
+        default_response = -1
         try:
+            response = response.strip()
             return int(response[0])
-        except ValueError:
-            return -1
+        except Exception as e:
+            logger.warning(
+                f"Error parsing multichoice response: {e}. Responding with default : {default_response}"
+            )
+            return default_response
 
     def _parse_ranking(self, response: str) -> list:
         """
@@ -101,6 +105,7 @@ class ShoppingBenchTaskParsers:
             A list of integers representing the items in ranked order. Limits to the first 5 unique
             elements. Returns an empty list if duplicates are found or parsing fails.
         """
+        default_respomse = []
         # Keep only numeric characters and specific punctuation.
         cleaned_response = "".join(
             c for c in response if c.isnumeric() or c in [",", " "]
@@ -112,9 +117,8 @@ class ShoppingBenchTaskParsers:
             try:
                 # Attempt to convert each item to an integer and add it to the list.
                 int_item = int(item)
-                if int_item > 5:
-                    continue
-                ranked_items.append(int_item)
+                if int_item <= 5:  # we know int_item can be at most 5
+                    ranked_items.append(int_item)
             except ValueError:
                 pass  # Skip non-numeric items.
 
@@ -123,7 +127,7 @@ class ShoppingBenchTaskParsers:
 
         # If there are duplicates, empty the list
         if len(ranked_items) != len(set(ranked_items)):
-            ranked_items = []
+            ranked_items = default_respomse
         return ranked_items
 
     def _parse_generation(self, response: str) -> str:
@@ -152,24 +156,30 @@ class ShoppingBenchTaskParsers:
         Returns:
             A list of integers representing the first 3 unique retrieved item indices.
         """
-        # Similar to ranking parser, but only returns the first 3 elements.
-        cleaned_response = "".join(
-            c for c in response if c.isnumeric() or c in [",", " "]
-        )
+        default_response = []
+        try:
+            # Similar to ranking parser, but only returns the first 3 elements.
+            cleaned_response = "".join(
+                c for c in response if c.isnumeric() or c in [",", " "]
+            )
 
-        # Convert to list of integers
-        response = []
-        for item in cleaned_response.split(","):
-            try:
-                # Attempt to convert each item to an integer and add it to the list.
-                response.append(int(item))
-            except ValueError:
-                pass  # Skip non-numeric items.
+            # Convert to list of integers
+            response = []
+            for item in cleaned_response.split(","):
+                try:
+                    # Attempt to convert each item to an integer and add it to the list.
+                    response.append(int(item))
+                except ValueError:
+                    pass  # Skip non-numeric items.
 
-        # consider only the first 3 elements
-        retrieved_items = response[:3]
-
-        return retrieved_items
+            # consider only the first 3 elements
+            retrieved_items = response[:3]
+            return retrieved_items
+        except Exception as e:
+            logger.warning(
+                f"Error parsing retrieval response: {e}. Responding with default : {default_response}"
+            )
+            return default_response
 
     def _parse_named_entity_recognition(self, response: str) -> list:
         """
@@ -195,105 +205,124 @@ class ShoppingBenchTaskParsers:
                 raise SyntaxError(
                     "Unexpected Syntax error - fall back to comma separated list."
                 )
-        except (SyntaxError, ValueError):
+        except SyntaxError as e:
             # Fallback: split the string by commas and strip whitespace.
-            # we remove empty entities. it will not cause bug, just an implementation choice. 
-            return [entity.strip() for entity in response.split(",") if entity.strip() != '']
+            # we remove empty entities. it will not cause bug, just an implementation choice.
+            return [
+                entity.strip()
+                for entity in response.split(",")
+                if entity.strip() != ""
+            ]
+
+
+import unittest
+
+
+class TestShoppingBenchTaskParsers(unittest.TestCase):
+
+    def test_multichoice(self):
+        parser = ShoppingBenchTaskParsers("multichoice")
+        # Check for a valid numeric response
+        self.assertEqual(parser.parse("2"), 2)
+        # Check for an invalid (alphabetic) response, expecting failure code -1
+        self.assertEqual(parser.parse("a"), -1)
+        # Check handling of newline-only input, expecting failure code -1
+        self.assertEqual(parser.parse("\n"), -1)
+        # Check handling of space-only input, expecting failure code -1
+        self.assertEqual(parser.parse(" "), -1)
+        # Check handling of leading space before a valid response
+        self.assertEqual(parser.parse(" 2"), 2)
+        # Check handling of newline before a valid response
+        self.assertEqual(parser.parse("\n1"), 1)
+        # Check for newline and space before a valid response
+        self.assertEqual(parser.parse("\n 3"), 3)
+        # Check for newline and space only, expecting failure code -1
+        self.assertEqual(parser.parse("\n "), -1)
+
+    def test_ranking(self):
+        parser = ShoppingBenchTaskParsers("ranking")
+        # Basic successful parse of a comma-separated list of numbers
+        self.assertEqual(parser.parse("1, 2, 3, 4, 5"), [1, 2, 3, 4, 5])
+        # Successfully parses even when wrapped in square brackets
+        self.assertEqual(parser.parse("[1, 2, 3, 4, 5]"), [1, 2, 3, 4, 5])
+        # Fails (empty list) when numbers are repeated
+        self.assertEqual(parser.parse("1, 2, 2, 3"), [])
+        # Filters out non-numeric values correctly, keeping the valid numbers
+        self.assertEqual(parser.parse("1, 2, 4, aicrowd, 5"), [1, 2, 4, 5])
+        # Check handling of newline-only input, expecting empty list
+        self.assertEqual(parser.parse("\n"), [])
+        # Check handling of space and newline input, expecting empty list
+        self.assertEqual(parser.parse(" \n"), [])
+        # Parses numbers correctly even when prefixed by non-numeric text
+        self.assertEqual(
+            parser.parse("The answer is: 1, 2, 3, 4, 5"), [1, 2, 3, 4, 5]
+        )
+        # Correctly handles a leading comma
+        self.assertEqual(parser.parse(",1,2,3,4,5"), [1, 2, 3, 4, 5])
+        # Fails (empty list) when numbers are not comma-separated
+        self.assertEqual(parser.parse("1 2"), [])
+
+    def test_generation(self):
+        parser = ShoppingBenchTaskParsers("generation")
+        # Verifies correct response without modification
+        self.assertEqual(
+            parser.parse("This is a generated response."),
+            "This is a generated response.",
+        )
+        # Handles and trims extraneous newlines and spaces correctly
+        self.assertEqual(
+            parser.parse("\nThe answer is \n\n good.\n\n\n\n\n\n\n"),
+            "The answer is \n\n good.",
+        )
+        # Correctly returns empty string for newline and space-only inputs
+        self.assertEqual(parser.parse("\n \n"), "")
+
+    def test_retrieval(self):
+        parser = ShoppingBenchTaskParsers("retrieval")
+        # Basic successful parse of a comma-separated list of numbers
+        self.assertEqual(parser.parse("100, 200, 300"), [100, 200, 300])
+        # Successfully handles shorter than expected input lists
+        self.assertEqual(parser.parse("100, 200"), [100, 200])
+        # Filters out non-numeric values correctly, keeping the valid numbers
+        self.assertEqual(parser.parse("100, 200, jjhg"), [100, 200])
+        # Correctly parses numbers despite excessive spacing and newlines
+        self.assertEqual(
+            parser.parse("100,           200, \n\n\n 300"), [100, 200, 300]
+        )
+        # Limits output to first three elements if more are provided
+        self.assertEqual(parser.parse("100, 200, 300, 400"), [100, 200, 300])
+        # Correctly handles newline before valid input
+        self.assertEqual(parser.parse("\n 100, 200, 300"), [100, 200, 300])
+        # Returns empty list for newline-only inputs
+        self.assertEqual(parser.parse("\n \n \n"), [])
+
+    def test_named_entity_recognition(self):
+        parser = ShoppingBenchTaskParsers("named_entity_recognition")
+        # Successfully parses a list of strings, correctly interpreting them as separate entities
+        self.assertEqual(
+            parser.parse("['New York', 'ShopBench', 'Amazon']"),
+            ["New York", "ShopBench", "Amazon"],
+        )
+        # Successfully parses comma-separated entities without brackets or quotes
+        self.assertEqual(
+            parser.parse("New York, ShopBench, Amazon"),
+            ["New York", "ShopBench", "Amazon"],
+        )
+        # Incorrectly includes the opening bracket in the first entity and the closing bracket in the last entity,
+        # indicating an unintentional parsing error with brackets when quotes are not used.
+        self.assertEqual(
+            parser.parse("[New York, ShopBench, Amazon]"),
+            ["[New York", "ShopBench", "Amazon]"],
+        )
+        # Correctly parses entities even when the input starts with a newline and a comma, trimming unnecessary characters
+        self.assertEqual(
+            parser.parse("\n, New York, ShopBench"), ["New York", "ShopBench"]
+        )
+        # Returns an empty list when parsing only a space, indicating no entities found
+        self.assertEqual(parser.parse(" "), [])
+        # Returns an empty list for inputs consisting only of newlines and spaces, indicating no entities found
+        self.assertEqual(parser.parse("\n \n"), [])
 
 
 if __name__ == "__main__":
-    # Example usage of the ShoppingBenchTaskParsers class for various task types.
-    
-    # MULTICHOICE EXAMPLE
-    multic_choice_parser = ShoppingBenchTaskParsers("multichoice")
-    print("Multichoice Example:")
-    print(multic_choice_parser.parse("2"))  # Expected output: 2
-    print(
-        multic_choice_parser.parse("a")
-    )  # Expected output (failure case): -1
-    print(multic_choice_parser.parse('\n')) # Should be -1
-    print(multic_choice_parser.parse(' ')) # Should also be -1
-    print(multic_choice_parser.parse(' 2')) # Should be 2
-    print(multic_choice_parser.parse('\n1')) # Should be 1
-    print(multic_choice_parser.parse('\n 3')) # Should be 3
-    print(multic_choice_parser.parse('\n ')) # Should be -1
-    print()
-    # MULTI CHOICE EXAMPLE TEST COMPLETE
-    
-    # RANKING EXAMPLE
-    ranking_parser = ShoppingBenchTaskParsers("ranking")
-    print("Ranking Example:")
-    print(
-        ranking_parser.parse("1, 2, 3, 4, 5")
-    )  # Expected output: [1, 2, 3, 4, 5]
-    print(
-        ranking_parser.parse("[1, 2, 3, 4, 5]")
-    )  # Expected output: [1, 2, 3, 4, 5] - tolerant to [, ]
-    print(
-        ranking_parser.parse("1, 2, 2, 3")
-    )  # Expected output (failure case): [] # because of repeating numbers
-    print(
-        ranking_parser.parse("1, 4, 5, aicrowd, 6")
-    )  # Expected output: [1, 4, 5, 6] # remove alphanumeric chars
-    print(
-        ranking_parser.parse('\n')) # Should be empty list
-    print(ranking_parser.parse(' \n'))
-    print(ranking_parser.parse('The answer is: 1, 2, 3, 4, 5')) # Should be 1, 2, 3, 4, 5
-    print(ranking_parser.parse(',1,2,3,4,5')) # Should be 1, 2, 3, 4, 5
-    print(ranking_parser.parse('1 2'))# Should be empty list
-
-    print()
-    # RANKING TEST COMPLETE
-    
-    # GENERATION EXAMPLE
-    generation_parser = ShoppingBenchTaskParsers("generation")
-    print("Generation Example:")
-    print(
-        generation_parser.parse("This is a generated response")
-    )  # Expected output: 'This is a generated response.'
-    print(generation_parser.parse("\nThe answer is \n\n good.\n\n\n\n\n\n\n")) # Expected: The answer is \n\n good. 
-    print(generation_parser.parse('\n \n')) # Should be nothing. 
-    print()
-
-    # GENERATION TEST COMPLETE
-    
-    # RETRIEVAL EXAMPLE
-    retrieval_parser = ShoppingBenchTaskParsers("retrieval")
-    print("Retrieval Example:")
-    print(
-        retrieval_parser.parse("100, 200, 300")
-    )  # Expected output: [100, 200, 300]
-    print(
-        retrieval_parser.parse("100, 200")
-    )  # Expected output (shorter than 3): [100, 200]
-    print(
-        retrieval_parser.parse("100, 200, jjhg")
-    )  # Expected output (removed alphhanumeric chars): [100, 200]
-    print(retrieval_parser.parse('100,           200, \n\n\n 300')) # Expected: [100, 200, 300]
-    print(
-        retrieval_parser.parse("100, 200, 300, 400")
-    )  # Expected output (only consider first 3 elems): [100, 200, 300]
-    print(retrieval_parser.parse('\n 100, 200, 300')) # Should be 100, 200, 300
-    print(retrieval_parser.parse('\n \n \n')) # Should be empty list
-    print()
-    print()
-    # RETRIEVAL TEST COMPLETE
-    
-    # NAMED ENTITY RECOGNITION EXAMPLE
-    ner_parser = ShoppingBenchTaskParsers("named_entity_recognition")
-    print("Named Entity Recognition Example:")
-    print(
-        ner_parser.parse("['New York', 'ShopBench', 'Amazon']")
-    )  # Expected output: ['New York', 'ShopBench', 'Amazon']
-    print(
-        ner_parser.parse("New York, ShopBench, Amazon")
-    )  # Expected output: ['New York', 'ShopBench', 'Amazon']
-    print(
-        ner_parser.parse("[New York, ShopBench, Amazon]")
-    )  # failure case - not tolerant to [ if quotes not used
-    # - extra '[' characters added to boundary elems]): ['[New York', 'ShopBench', 'Amazon]']
-    # Expected output: ['[New York', 'ShopBench', 'Amazon]']
-    print(ner_parser.parse('\n, New York, ShopBench')) # Should be ['New York', 'ShopBench']
-    print(ner_parser.parse(' ')) # Should be []
-    print(ner_parser.parse('\n \n')) # Should be []
-    
+    unittest.main()

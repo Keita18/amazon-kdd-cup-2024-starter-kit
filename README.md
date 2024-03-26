@@ -55,7 +55,9 @@ The development datasets will be given in json format with the following fields.
 - `input_field`: This field contains the instructions and the question that should be answered by the model. 
 - `output_field`: This field contains the ground truth answer to the question. 
 - `task_type`: This field contains the type of the task (Details in the next Section, "Tasks")
+- `task_name`: This field contains the name of the task. However, the exact task names are redacted, and we only provide participants with hashed task names (e.g. `task1`, `task2`). 
 - `metric`: This field contains the metric used to evaluate the question (Details in Section "Evaluation Metrics"). 
+- `track`: This field specifies the track the question comes from. 
 
 However, the test dataset (which will be hidden from participants) will have a different format with only two fields: 
 - `input_field`, which is the same as above. 

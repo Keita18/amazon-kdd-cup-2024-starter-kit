@@ -18,7 +18,7 @@ Please note that NVIDIA T4 uses a somewhat outdated architectures and is thus no
 Besides, the following restrictions will also be imposed: 
 
 - Network connection will be disabled. 
-- Each submission will be assigned a certain amount of time to run. Submissions that exceed the time limits will be killed and will not be evaluated. The tentative time limit is set as follows **[TO BE TESTED WITH AICROWD SUBMISSION SYSTEM]**. 
+- Each submission will be assigned a certain amount of time to run. Submissions that exceed the time limits will be killed and will not be evaluated. The tentative time limit is set as follows. 
 
 | Phase  | Track 1 | Track 2 | Track 3 | Track 4 | Track 5 |
 | ------ | ------- | ------- | ------- | ------- | ------- |

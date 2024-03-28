@@ -168,6 +168,7 @@ For reference, the baseline solution with zero-shot [Vicuna-7B](https://huggingf
 | ------ | ------- | ------- | ------- | ------- | 
 | **Phase 1**| ~50 minutes | ~3 minutes | ~25 minutes | ~35 minutes | 
 
+We limit the prediction time of each sample to at most **15 seconds**. 
 
 ## 🧩 How are my model responses parsed by the evaluators ?
 Please refer to [parsers.py](parsers.py) for more details on how we parse your model responses.

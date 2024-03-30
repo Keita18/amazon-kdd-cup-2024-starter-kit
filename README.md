@@ -1,4 +1,4 @@
-![AMAZON KDD CUP 2024: MULTI-TASK ONLINE SHOPPING CHALLENGE FOR LLMS](https://images.aicrowd.com/raw_images/challenges/social_media_image_file/1139/566667103918dae81381.jpg)
+![AMAZON KDD CUP 2024: MULTI-TASK ONLINE SHOPPING CHALLENGE FOR LLMS](https://aicrowd-production.s3.eu-central-1.amazonaws.com/challenge_images/amazon-kdd-cup-2024/amazon-kdd-cup-24-banner.jpg)
 [![Discord](https://img.shields.io/discord/565639094860775436.svg)](https://discord.gg/yWurtB2huX)
 
 # 🛒 [Amazon KDD CUP 2024: Multi-Task Online Shopping Challenge for LLMs](https://www.aicrowd.com/challenges/amazon-kdd-cup-2024-multi-task-online-shopping-challenge-for-llms) Starter Kit

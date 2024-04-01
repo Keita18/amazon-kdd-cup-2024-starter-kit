@@ -17,7 +17,7 @@ Few of the most common ways are as follows:
     [...]
     ```
 
-We would suggest participants to keep the `requirements.txt` to the minimum, with only necessary packages in it. Chances are that, the more (unnecessary) packages you put in it, the more likely you may encounter an error on some (maybe totally unnecessary packages). 
+We would suggest participants to keep the `requirements.txt` to the minimum, with only necessary packages in it. Chances are that, the more (unnecessary) packages you put in it, the more likely you may encounter an error on some (maybe totally unnecessary) packages. 
 
 * `apt.txt` -- The Debian packages (via aptitude) used by your inference code!
 

@@ -17,11 +17,13 @@ Few of the most common ways are as follows:
     [...]
     ```
 
+We would suggest participants to keep the `requirements.txt` to the minimum, with only necessary packages in it. Chances are that, the more (unnecessary) packages you put in it, the more likely you may encounter an error on some (maybe totally unnecessary packages). 
+
 * `apt.txt` -- The Debian packages (via aptitude) used by your inference code!
 
 These files are used to construct your **AIcrowd submission docker containers** in which your code will run.
 
-* `Dockerfile` -- **For advanced users only**. `Dockerfile` gives you more flexibility on defining the software runtime used during evaluations.
+* `Dockerfile` -- `Dockerfile` gives you more flexibility on defining the software runtime used during evaluations. The `Dockerfile` under the root path of the starter kit will be used to build your solution. Feel free to modify anything in it, and test it locally. 
 
 ----
 

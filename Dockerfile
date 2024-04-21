@@ -12,7 +12,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 # Install system dependencies and clean up in one layer
 COPY apt.txt /tmp/apt.txt
-RUN apt -qq update && apt -qq install -y --no-install-recommends `cat /tmp/apt.txt` locales wget \
+RUN apt -qq update && apt -qq install -y --no-install-recommends `cat /tmp/apt.txt` locales wget build-essential \
     && locale-gen en_US.UTF-8 \
     && rm -rf /var/cache/apt/* /var/lib/apt/lists/* \
     && apt clean

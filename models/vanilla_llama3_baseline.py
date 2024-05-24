@@ -3,7 +3,6 @@ import random
 from typing import Any, Dict, List
 
 import vllm
-from outlines.integrations.vllm import RegexLogitsProcessor
 
 from .base_model import ShopBenchBaseModel
 
@@ -103,14 +102,7 @@ class Llama3_8B_ZeroShotModel(ShopBenchBaseModel):
         # set max new tokens to be generated
         max_new_tokens = 100 
         
-        # Setup logits processor
-        logits_processors = []
         if is_multiple_choice:
-            logits_processors = [
-                RegexLogitsProcessor(
-                    regex_string="\d+", # constrain generation to only integers
-                    llm=self.llm)
-            ]
             max_new_tokens = 1 # For MCQ tasks, we only need to generate 1 token
         
         
@@ -128,7 +120,6 @@ class Llama3_8B_ZeroShotModel(ShopBenchBaseModel):
                 # because the 75 max token limit is checked using the Llama2 tokenizer.
                 # The Llama3 model instead uses a differet tokenizer with a larger vocabulary
                 # This allows it to represent the same content more efficiently, using fewer tokens.
-                logits_processors=logits_processors, # Use logits processors to do constrained/guided generation in case of MCQ tasks
             ),
             use_tqdm = False
         )

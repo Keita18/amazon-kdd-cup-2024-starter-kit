@@ -116,10 +116,6 @@ class Llama3_8B_ZeroShotModel(ShopBenchBaseModel):
                 seed=AICROWD_RUN_SEED, # Seed for reprodicibility
                 skip_special_tokens=True,  # Whether to skip special tokens in the output.
                 max_tokens=max_new_tokens,  # Maximum number of tokens to generate per output sequence.
-                # Note: We are using 50 max new tokens instead of 75,
-                # because the 75 max token limit is checked using the Llama2 tokenizer.
-                # The Llama3 model instead uses a differet tokenizer with a larger vocabulary
-                # This allows it to represent the same content more efficiently, using fewer tokens.
             ),
             use_tqdm = False
         )

@@ -52,20 +52,36 @@ def generate_model_outputs(data_df, model):
     - A list containing the model outputs for each entry in the data DataFrame.
     """
     outputs = []
-    for _, row in tqdm(
-        data_df.iterrows(), total=len(data_df), desc="Generating Responses"
-    ):
-        is_multiple_choice = row["task_type"] == "multiple-choice"
-        # the 'task_type' column won't be available during evaluation, so you should use something like
-        # ```is_multiple_choice = row['is_multiple_choice']``
-        prompt = row["input_field"]
-        model_output = model.predict(prompt, is_multiple_choice)
-        outputs.append(model_output)
-    return outputs
+    task_grouped_df = data_df.groupby(by=["task_type"])
+    
+    for task_type, task_group_data_df in task_grouped_df:
+        task_group_data_df = task_group_data_df.reset_index(drop=True)
+        
+        is_multiple_choice = task_type[0] == "multiple-choice"
+        batch_size = model.get_batch_size()
+        
+        batches = [task_group_data_df[i:i+batch_size] for i in range(0,len(task_group_data_df),batch_size)]
+        
+        for batch_df in batches:
+            batch = {
+                "prompt": batch_df["input_field"].tolist(),
+            }
+            model_output = model.batch_predict(
+                    batch, 
+                    is_multiple_choice
+                )
+            outputs.append(
+                pd.DataFrame({
+                    "input_field": batch["prompt"],
+                    "model_output_str": model_output
+                }))
+    
+    df_outputs = pd.concat(outputs)
+    return df_outputs
 
 
 # Function to evaluate the generated model outputs
-def evaluate_outputs(data_df, outputs, log_every_n_steps=1):
+def evaluate_outputs(data_df, log_every_n_steps=1):
     """
     Evaluate the model outputs against ground truth values using specified metrics.
 
@@ -84,17 +100,18 @@ def evaluate_outputs(data_df, outputs, log_every_n_steps=1):
     for row_idx, row in tqdm(
         data_df.iterrows(), total=len(data_df), desc="Evaluating"
     ):
-        task_name, task_type, metric, ground_truth = (
+        task_name, task_type, metric, ground_truth, model_output_str = (
             row["task_name"],
             row["task_type"],
             row["metric"],
             row["output_field"],
+            row["model_output_str"],
         )
 
         if metric not in eval_methods:
             raise NotImplementedError(f"No metric for {metric=}")
 
-        model_output = task_parsers[task_type].parse(outputs[row_idx])
+        model_output = task_parsers[task_type].parse(model_output_str)
         eval_fn = eval_methods[metric]
         metric_score = eval_fn(model_output, ground_truth)
 
@@ -230,14 +247,15 @@ def main():
     model = UserModel()
 
     # Generate model outputs
-    outputs = generate_model_outputs(data_df, model)
-    data_df["outputs"] = (
-        outputs  # Optional: Add outputs back to DataFrame for inspection
-    )
-    print(data_df.head())
+    df_outputs = generate_model_outputs(data_df, model)
+    
+    # add outputs to the data_df
+    merged_data_df = pd.merge(data_df, df_outputs, on="input_field")
+        
+    print(merged_data_df.head())
 
     # Evaluate the generated outputs and calculate metrics
-    per_task_metrics = evaluate_outputs(data_df, outputs)
+    per_task_metrics = evaluate_outputs(merged_data_df)
 
     # Aggregate and display the evaluation scores
     overall_metrics = aggregate_scores(per_task_metrics)

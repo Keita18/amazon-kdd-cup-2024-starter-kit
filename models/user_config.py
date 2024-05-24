@@ -19,3 +19,10 @@ UserModel = DummyModel
 #
 # UserModel = YourModel
 
+
+# For example, to use the Llama3 8B Instruct baseline, you can comment the lines below:
+# please remember to download the model weights and checking them into the repository 
+# before submitting
+
+# from models.vanilla_llama3_baseline import Llama3_8B_ZeroShotModel
+# UserModel = Llama3_8B_ZeroShotModel

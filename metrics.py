@@ -1,11 +1,12 @@
+import os
+from typing import List, Tuple, Union
+
+import evaluate
+import numpy as np
+import torch
+from loguru import logger
 from rouge_score import rouge_scorer
 from sentence_transformers import SentenceTransformer
-import numpy as np
-import evaluate
-
-import torch
-
-from typing import List, Union, Tuple
 
 sacrebleu = None
 sentence_transformer_model_cache = {}

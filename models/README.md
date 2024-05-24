@@ -4,7 +4,7 @@
 For a streamlined experience, we suggest placing the code for all your models within the `models` directory. This is a recommendation for organizational purposes, but it's not a strict requirement.
 
 ## Model Base Class
-Your models should inherit from the `ShopBenchBaseModel` class found in [base_model.py](base_model.py). We provide an example model, `dummy_model.py`, to illustrate how you might structure your own model. Crucially, your model class must implement the `predict` method.
+Your models should inherit from the `ShopBenchBaseModel` class found in [base_model.py](base_model.py). We provide an example model, `dummy_model.py`, to illustrate how you might structure your own model. Crucially, your model class must implement the `batch_predict` method.
 
 ## Configuring Your Model
 To ensure your model is recognized and utilized correctly, please specify your model class name in the [`user_config.py`](user_config.py) file, by following the instructions in the inline comments.
@@ -12,12 +12,14 @@ To ensure your model is recognized and utilized correctly, please specify your m
 ## Model Inputs and Outputs
 
 ### Inputs
-Your model will receive two pieces of information for every task:
-- `prompt` (`str`): This is the specific task's input prompt.
+- `batch` (`Dict[str, Any]`): A batch of inputs as a dictionary, where the dictionary has the following key:
+    - `prompt` (`List[str]`): `A list if prompts representing the tasks in a batch`
 - `is_multiple_choice` (`bool`): This indicates whether the task is a multiple choice question.
 
 ### Outputs
-The output from your model's `predict` function should always be a string. Depending on the task, this could be:
+
+The output from your model's `batch_predict` function should be a list of string responses for all the prompts in the input batch.
+Depending on the task, each response could be:
 - A single integer (in the range [0, 3]) for multiple choice tasks.
 - A comma-separated list of integers for ranking tasks.
 - A comma-separated list of named entities for Named Entity Recognition (NER) tasks.

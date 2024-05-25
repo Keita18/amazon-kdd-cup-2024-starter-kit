@@ -137,21 +137,9 @@ class Llama3_8B_ZeroShotModel(ShopBenchBaseModel):
         - queries (list of str): A list of queries to be formatted into prompts.
             
         """
-        system_prompt = "You are a helpful online shopping assistant. Please answer the following question about online shopping and follow the given instructions."
+        system_prompt = "You are a helpful online shopping assistant. Please answer the following question about online shopping and follow the given instructions.\n\n"
         formatted_prompts = []
-
-        for _idx, prompt in enumerate(prompts):
-            user_message = ""
-
-            formatted_prompts.append(
-                self.tokenizer.apply_chat_template(
-                    [
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": prompt},
-                    ],
-                    tokenize=False,
-                    add_generation_prompt=True,
-                )
-            )
+        for prompt in prompts:
+            formatted_prompts.append(system_prompt + prompt)
 
         return formatted_prompts

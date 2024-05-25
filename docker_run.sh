@@ -35,6 +35,7 @@ docker run \
     --gpus all \
     -v "$(pwd)":/submission \
     -w /submission \
+    --shm-size=10.24gb\
     $IMAGE_NAME python local_evaluation.py
 
 # Note: We assume you have nvidia-container-toolkit installed and configured 

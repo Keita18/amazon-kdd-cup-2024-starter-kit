@@ -50,6 +50,7 @@ class Llama3_8B_ZeroShotModel(ShopBenchBaseModel):
         # initialize the model with vllm
         self.llm = vllm.LLM(
             self.model_name,
+            worker_use_ray=True,
             tensor_parallel_size=VLLM_TENSOR_PARALLEL_SIZE, 
             gpu_memory_utilization=VLLM_GPU_MEMORY_UTILIZATION, 
             trust_remote_code=True,

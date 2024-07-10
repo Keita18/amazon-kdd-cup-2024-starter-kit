@@ -1,8 +1,13 @@
 {
-  "challenge_id": "amazon-kdd-cup-24-understanding-shopping-concepts",
+  "challenge_id": "amazon-kdd-cup-24-shopping-knowledge-reasoning",
   "authors": [
-    "your-aicrowd-username"
+    "giba",
+    "Chris_Deotte",
+    "aerdem4",
+    "simon_jegou",
+    "BenediktSchifferer",
+    "sorokin"
   ],
-  "gpu": false,
-  "description": "(optional) description about your custom model"
+  "gpu": true,
+  "description": "Qwen2 72B + QLoRA"
 }

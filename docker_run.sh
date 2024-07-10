@@ -32,11 +32,12 @@ echo "Total build time: $BUILD_TIME seconds"
 # the -w sets the workind directory to /submission.
 # It then local_evaluation.py using software runtime set up in the Dockerfile.
 docker run \
-    --gpus all \
+    --gpus '"device=2,3,4,5"' \
     -v "$(pwd)":/submission \
     -w /submission \
-    --shm-size=10.24gb\
-    $IMAGE_NAME python local_evaluation.py
+    -v /raid/isorokin/models:/models \
+    --shm-size=10.24gb \
+    $IMAGE_NAME python -u local_evaluation.py
 
 # Note: We assume you have nvidia-container-toolkit installed and configured 
 # to use the --gpus all flag. If you are not using GPUs, you can remove this flag.

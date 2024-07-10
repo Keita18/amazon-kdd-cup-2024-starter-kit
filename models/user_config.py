@@ -1,11 +1,11 @@
 # Importing DummyModel from the models package.
 # The DummyModel class is located in the dummy_model.py file inside the 'models' directory.
-from models.dummy_model import DummyModel
+# from models.dummy_model import DummyModel
 
 # This line establishes an alias for the DummyModel class to be used within this script.
 # Instead of directly using DummyModel everywhere in the code, we're assigning it to 'UserModel'.
 # This approach allows for easier reference to your model class when evaluating your models,
-UserModel = DummyModel
+# UserModel = DummyModel
 
 
 # When implementing your own model please follow this pattern:
@@ -26,3 +26,6 @@ UserModel = DummyModel
 
 # from models.vanilla_llama3_baseline import Llama3_8B_ZeroShotModel
 # UserModel = Llama3_8B_ZeroShotModel
+
+from models.vllm_model import VLLMModel
+UserModel = VLLMModel

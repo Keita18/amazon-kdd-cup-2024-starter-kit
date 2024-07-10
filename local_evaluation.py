@@ -1,4 +1,5 @@
 import os
+os.environ["CUDA_VISIBLE_DEVICES"]="0,1,2,3"
 
 import metrics
 import numpy as np
@@ -6,6 +7,7 @@ import pandas as pd
 import parsers
 import torch
 from tqdm import tqdm
+from time import time
 
 VERSION = "0.1.0"
 
@@ -53,6 +55,8 @@ def generate_model_outputs(data_df, model):
     """
     outputs = []
     task_grouped_df = data_df.groupby(by=["task_type"])
+
+    durations = []
     
     for task_type, task_group_data_df in task_grouped_df:
         task_group_data_df = task_group_data_df.reset_index(drop=True)
@@ -66,15 +70,21 @@ def generate_model_outputs(data_df, model):
             batch = {
                 "prompt": batch_df["input_field"].tolist(),
             }
+            start_time = time()
             model_output = model.batch_predict(
                     batch, 
                     is_multiple_choice
                 )
+            end_time = time()
+            durations.append(end_time - start_time)
             outputs.append(
                 pd.DataFrame({
                     "input_field": batch["prompt"],
                     "model_output_str": model_output
                 }))
+
+    average_time = sum(durations) / len(durations)
+    print(f"Average time per batch: {average_time}")
     
     df_outputs = pd.concat(outputs)
     return df_outputs
@@ -228,7 +238,7 @@ def main():
     # Load development data
     # Please download the development data from : https://www.aicrowd.com/challenges/amazon-kdd-cup-2024-multi-task-online-shopping-challenge-for-llms/dataset_files
     # and place it at: ./data/development.json
-    DATA_FILENAME = "./data/development.json"
+    DATA_FILENAME = "./data/corrected_development.json"
 
     if not os.path.exists(DATA_FILENAME):
         raise FileNotFoundError(
@@ -239,6 +249,8 @@ def main():
 
     data_df = load_development_data(DATA_FILENAME)
 
+    # data_df = data_df[data_df["task_type"].isin(["multiple-choice"])]
+
     # Load the model from the user's custom configuration
     # Note: The evaluator **Always** imports the UserModel, please reference your own class
     # by setting the `UserModel` variable in models.user_config
@@ -247,7 +259,9 @@ def main():
     model = UserModel()
 
     # Generate model outputs
+    a = time()
     df_outputs = generate_model_outputs(data_df, model)
+    b = time()
     
     # add outputs to the data_df
     merged_data_df = pd.merge(data_df, df_outputs, on="input_field")
@@ -267,6 +281,15 @@ def main():
     # Calculate and print the overall score across all tasks and metrics
     overall_score = overall_metrics["overall_score"].mean()
     print(f"Overall Score: {overall_score}")
+
+    overall_metrics["score"] = overall_metrics["num_samples"] * overall_metrics["overall_score"]
+    overall_metrics["weight"] = overall_metrics["num_samples"]
+    dt = overall_metrics.groupby("task_type")[["score", "weight"]].sum()
+    dt["score"] = dt["score"] / dt["weight"]
+    del dt["weight"]
+    print(dt)
+
+    print(f"Elapsed {b-a} seconds")
 
 
 if __name__ == "__main__":

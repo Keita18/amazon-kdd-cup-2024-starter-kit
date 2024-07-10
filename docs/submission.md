@@ -118,8 +118,8 @@ To submit your code, push a tag beginning with "submission-" to your repository 
 Assuming, you have cloned the repo already by following the instructions [here](../README.md#setup) and made your changes.
 
 1. Commit your changes with `git commit -am "Your commit message"`.
-2. Tag your submission (e.g., `git tag -am "submission-v0.1" submission-v0.1`).
-3. Push your changes and tags to the AIcrowd repository (e.g. `git push origin submission-v0.1`)
+2. Tag your submission (e.g., `git tag -am "submission-72b-qwen2-theta-0.75-t1" submission-72b-qwen2-theta-0.75-t1`).
+3. Push your changes and tags to the AIcrowd repository (e.g. `git push origin submission-72b-qwen2-theta-0.75-t1`)
 
 After pushing your tag, you can view your submission details at `https://gitlab.aicrowd.com/<YOUR-AICROWD-USER-NAME>/amazon-kdd-cup-2024-starter-kit/issues`. It may take about **30 minutes** for each submission to build and begin evaluation, so please be patient. 
 
